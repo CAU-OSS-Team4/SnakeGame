@@ -3,9 +3,8 @@ package snakegame;
 enum DIRECTION { NORTH, SOUTH, EAST, WEST }
 
 class Game {
-	public static int WIDTH = 40;
-	public static int HEIGHT = 40;
-	private static int QUEUE_SIZE = WIDTH * HEIGHT + 1;
+	private int WIDTH = 40;
+	private int HEIGHT = 40;
 	
 	private int score;
 	private Pair apple;
@@ -13,14 +12,27 @@ class Game {
 	private Deque snake;
 	
 	private boolean is_game_over;
-
-	public Game() {
+	
+	public void init() {
 		score = 0;
 		is_game_over = false;
-		snake = new Deque(QUEUE_SIZE);
+		
+		snake = new Deque(WIDTH * HEIGHT + 1);
 		snake.push_front(new Pair(WIDTH / 2, HEIGHT / 2));
+		d = DIRECTION.NORTH;
+		
 		apple = new Pair(-1, -1);
 		generateApple();
+	}
+	
+	public Game() {
+		init();
+	}
+	
+	public Game(int w, int h) {
+		WIDTH = w;
+		HEIGHT = h;
+		init();
 	}
 
 	private void generateApple() {
@@ -80,4 +92,8 @@ class Game {
 	public int getScore() { return score; }
 	
 	public boolean isGameOver() { return is_game_over; }
+	
+	public int getWidth() { return WIDTH; }
+	
+	public int getHeight() { return HEIGHT; }
 }

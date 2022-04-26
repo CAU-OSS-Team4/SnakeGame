@@ -32,9 +32,9 @@ class Deque {
 		return arr[e];
 	}
 	
-	public Pair front() { return arr[s]; }
+	public Pair front() { return new Pair(arr[s].x, arr[s].y); }
 	
-	public Pair rear() { return arr[(e + max_size - 1) % max_size]; }
+	public Pair rear() { return new Pair(arr[(e + max_size - 1) % max_size].x, arr[(e + max_size - 1) % max_size].y); }
 	
 	public int size() { return (e - s + max_size) % max_size; }
 	

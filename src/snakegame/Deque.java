@@ -15,29 +15,28 @@ class Deque {
 		s = (s + max_size - 1) % max_size;
 		arr[s] = x;
 	}
+	
 	public void push_back(Pair x) {
 		arr[e] = x;
 		e = (e + 1) % max_size;
 	}
+	
 	public Pair pop_front() {
 		Pair ret = arr[s];
 		s = (s + 1) % max_size;
 		return ret;
 	}
+	
 	public Pair pop_back() {
 		e = (e + max_size - 1) % max_size;
 		return arr[e];
 	}
-	public Pair front() {
-		return arr[s];
-	}
-	public Pair rear() {
-		return arr[(e + max_size - 1) % max_size];
-	}
 	
-	public int size() {
-		return (e - s + max_size) % max_size;
-	}
+	public Pair front() { return arr[s]; }
+	
+	public Pair rear() { return arr[(e + max_size - 1) % max_size]; }
+	
+	public int size() { return (e - s + max_size) % max_size; }
 	
 	public Pair[] list() {
 		int N = size();

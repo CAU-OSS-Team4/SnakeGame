@@ -12,7 +12,7 @@
 - The game continues until the snake "dies".
   - The snake dies by either
     1. running into the edge of the board.
-    2. runiing into its own body.
+    2. running into its own body.
 - Once the snake dies, the final score is calculated based on the number of apples eaten by the snake.
 
 
@@ -30,8 +30,7 @@
   2. **RESTART** : starts a new game, instead of the paused game
   3. **SAVE** : stores the current game status and returns to the main menu
      - The status includes the information about the snake and apple.
-
-  4. **EXIT** (returns to the main menu without saving the current game status)
+  4. **EXIT** : returns to the main menu without saving the current game status
 
 
 

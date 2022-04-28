@@ -2,13 +2,22 @@ package snakegame;
 
 import java.io.*;
 import java.util.*;
+import java.text.SimpleDateFormat;
 
-class RankingTableRow {
+class RankingTableRow implements Comparable {
 	String username;
 	int score;
 	Date date;
 	public RankingTableRow(String u, int s, Date d) {
 		username = u; score = s; date = d;
+	}
+	
+	@Override
+	public int compareTo(Object o) {
+		RankingTableRow row = (RankingTableRow)o;
+		if (score != row.score) return -(((Integer)score).compareTo(row.score));
+		if (date.compareTo(row.date) != 0) return date.compareTo(row.date);
+		return username.compareTo(row.username);
 	}
 }
 
@@ -27,6 +36,7 @@ public final class DataLoader {
 	public static final String DATA_FILES_PATH = "/snakegame/data";
 	public static final String RANKING_FILE_NAME = "rank";
 	public static final String SAVE_FILE_NAME = "save";
+	public static final SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd.HH:mm:ss");
 	
 	static GameContext loadGame() throws Exception {
 		File file = new File(DATA_FILES_PATH, SAVE_FILE_NAME);
@@ -36,13 +46,13 @@ public final class DataLoader {
 		
 		Pair apple; int score, width, height; DIRECTION direction;
 		
-		String[] data = br.readLine().split(" ");
+		String[] data = br.readLine().strip().split(" ");
 		width = Integer.parseInt(data[0]);
 		height = Integer.parseInt(data[1]);
 		
 		Deque snake = new Deque(width * height + 1);
 		
-		data = br.readLine().split(" ");
+		data = br.readLine().strip().split(" ");
 		int N = Integer.parseInt(data[0]);
 		for (int n = 1; n <= N; n++) {
 			int x = Integer.parseInt(data[n].split(":")[0]);
@@ -50,14 +60,15 @@ public final class DataLoader {
 			snake.push_back(new Pair(x, y));
 		}
 		
-		data = br.readLine().split(" ");
+		data = br.readLine().strip().split(" ");
 		apple = new Pair(Integer.parseInt(data[0].split(":")[0]), Integer.parseInt(data[0].split(":")[1]));
 		score = Integer.parseInt(data[1]);
 		
-		if (data[2] == "NORTH") direction = DIRECTION.NORTH;
-		else if (data[2] == "SOUTH") direction = DIRECTION.SOUTH;
-		else if (data[2] == "EAST") direction = DIRECTION.EAST;
+		if (data[2].equals("NORTH")) direction = DIRECTION.NORTH;
+		else if (data[2].equals("SOUTH")) direction = DIRECTION.SOUTH;
+		else if (data.equals("EAST")) direction = DIRECTION.EAST;
 		else direction = DIRECTION.WEST;
+		System.out.println(data[2]);
 		
 		br.close();
 		return new GameContext(width, height, snake, apple, score, direction);
@@ -97,5 +108,66 @@ public final class DataLoader {
 		
 		bw.write(sb.toString());
 		bw.close();
+	}
+	
+	static RankingTableRow[] loadRanking() throws Exception {
+		File file = new File(DATA_FILES_PATH, RANKING_FILE_NAME);
+		if (!file.exists()) return new RankingTableRow[0];
+
+		BufferedReader br = new BufferedReader(new FileReader(file));
+		
+		String line = br.readLine().strip();
+		int N = Integer.parseInt(line);
+		
+		RankingTableRow[] ret = new RankingTableRow[N];
+		for (int n = 0; n < N; n++) {
+			String[] data = br.readLine().strip().split(" ");
+			ret[n] = new RankingTableRow(data[0], Integer.parseInt(data[1]), format.parse(data[2]));
+		}
+		br.close();
+		return ret;
+	}
+	
+	static int updateScoreboard(RankingTableRow record) throws Exception {
+		File dir = new File(DATA_FILES_PATH);
+		if (!dir.exists()) dir.mkdirs();
+		
+		File file = new File(DATA_FILES_PATH, RANKING_FILE_NAME);
+		if (!file.exists()) {
+			BufferedWriter bw = new BufferedWriter(new FileWriter(file));
+			bw.write("1\n");
+			bw.write(record.username + " " + record.score + " " + format.format(record.date) + "\n");
+			bw.close();
+			return 1;
+		}
+		
+		BufferedReader br = new BufferedReader(new FileReader(file));
+		StringBuilder sb = new StringBuilder();
+		
+		String line = br.readLine().strip();
+		int ret = -1; int N = Integer.parseInt(line);
+		sb.append((N+1) + "\n");
+		
+		for (int n = 1; n <= N; n++) {
+			line = br.readLine().strip();
+			String[] data = line.split(" ");
+			RankingTableRow row = new RankingTableRow(data[0], Integer.parseInt(data[1]), format.parse(data[2]));
+			if (ret == -1 && record.compareTo(row) < 0) {
+				sb.append(record.username + " " + record.score + " " + format.format(record.date) + "\n");
+				ret = n;
+			}
+			sb.append(line + "\n");
+		}
+		if (ret == -1) {
+			sb.append(record.username + " " + record.score + " " + format.format(record.date) + "\n");
+			ret = N+1;
+		}
+		br.close();
+		
+		BufferedWriter bw = new BufferedWriter(new FileWriter(file));
+		bw.write(sb.toString());
+		bw.close();
+		
+		return ret;
 	}
 }

@@ -46,13 +46,15 @@ public final class DataLoader {
 		
 		Pair apple; int score, width, height; DIRECTION direction;
 		
-		String[] data = br.readLine().strip().split(" ");
+		String line = br.readLine(); if (line.endsWith("\n")) line.substring(0, line.length()-1);
+		String[] data = line.split(" ");
 		width = Integer.parseInt(data[0]);
 		height = Integer.parseInt(data[1]);
 		
 		Deque snake = new Deque(width * height + 1);
-		
-		data = br.readLine().strip().split(" ");
+
+		line = br.readLine(); if (line.endsWith("\n")) line.substring(0, line.length()-1);
+		data = line.split(" ");
 		int N = Integer.parseInt(data[0]);
 		for (int n = 1; n <= N; n++) {
 			int x = Integer.parseInt(data[n].split(":")[0]);
@@ -60,7 +62,8 @@ public final class DataLoader {
 			snake.push_back(new Pair(x, y));
 		}
 		
-		data = br.readLine().strip().split(" ");
+		line = br.readLine(); if (line.endsWith("\n")) line.substring(0, line.length()-1);
+		data = line.split(" ");
 		apple = new Pair(Integer.parseInt(data[0].split(":")[0]), Integer.parseInt(data[0].split(":")[1]));
 		score = Integer.parseInt(data[1]);
 		
@@ -89,8 +92,8 @@ public final class DataLoader {
 		
 		StringBuilder sb = new StringBuilder();
 		
-		sb.append(ctx.score + " ");
-		sb.append(ctx.width + "\n");
+		sb.append(ctx.width + " ");
+		sb.append(ctx.height + "\n");
 		
 		Pair[] snake = ctx.snake.list();
 		
@@ -99,7 +102,7 @@ public final class DataLoader {
 		sb.append("\n");
 		
 		sb.append(ctx.apple.x + ":" + ctx.apple.y + " ");
-		sb.append(ctx.height + " ");
+		sb.append(ctx.score + " ");
 		
 		if (ctx.direction == DIRECTION.NORTH) sb.append("NORTH");
 		else if (ctx.direction == DIRECTION.SOUTH) sb.append("SOUTH");
@@ -115,13 +118,14 @@ public final class DataLoader {
 		if (!file.exists()) return new RankingTableRow[0];
 
 		BufferedReader br = new BufferedReader(new FileReader(file));
-		
-		String line = br.readLine().strip();
+
+		String line = br.readLine(); if (line.endsWith("\n")) line.substring(0, line.length()-1);
 		int N = Integer.parseInt(line);
 		
 		RankingTableRow[] ret = new RankingTableRow[N];
 		for (int n = 0; n < N; n++) {
-			String[] data = br.readLine().strip().split(" ");
+			line = br.readLine(); if (line.endsWith("\n")) line.substring(0, line.length()-1);
+			String[] data = line.split(" ");
 			ret[n] = new RankingTableRow(data[0], Integer.parseInt(data[1]), format.parse(data[2]));
 		}
 		br.close();
@@ -143,13 +147,13 @@ public final class DataLoader {
 		
 		BufferedReader br = new BufferedReader(new FileReader(file));
 		StringBuilder sb = new StringBuilder();
-		
-		String line = br.readLine().strip();
+
+		String line = br.readLine(); if (line.endsWith("\n")) line.substring(0, line.length()-1);
 		int ret = -1; int N = Integer.parseInt(line);
 		sb.append((N+1) + "\n");
 		
 		for (int n = 1; n <= N; n++) {
-			line = br.readLine().strip();
+			line = br.readLine(); if (line.endsWith("\n")) line.substring(0, line.length()-1);
 			String[] data = line.split(" ");
 			RankingTableRow row = new RankingTableRow(data[0], Integer.parseInt(data[1]), format.parse(data[2]));
 			if (ret == -1 && record.compareTo(row) < 0) {

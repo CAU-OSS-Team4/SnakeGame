@@ -13,8 +13,24 @@ public class Test {
 			else if (ch == 's') game.setDirection(DIRECTION.SOUTH);
 			else if (ch == 'd') game.setDirection(DIRECTION.EAST);
 			else if (ch == 'a') game.setDirection(DIRECTION.WEST);
+			else if (ch == 'S') {
+				try {
+					DataLoader.saveGame(game.getContext());
+				} catch(Exception e) {
+					System.out.println(e.getMessage());
+				}
+			}
+			else if (ch == 'L') {
+				try {
+					game = new Game(DataLoader.loadGame());
+				} catch(Exception e) {
+					System.out.println(e.getMessage());
+				}
+			}
         	
-			game.progress();
+			if (ch == 'S') continue;
+			if (ch != 'L') game.progress();
+			
 			if (game.isGameOver()) {
 				System.out.println("game over!");
 				break;

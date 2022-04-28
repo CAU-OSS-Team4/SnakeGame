@@ -34,7 +34,16 @@ class Game {
 		HEIGHT = h;
 		init();
 	}
-
+	
+	public Game(GameContext ctx) {
+		snake = ctx.snake;
+		apple = ctx.apple;
+		score = ctx.score;
+		WIDTH = ctx.width;
+		HEIGHT = ctx.height;
+		d = ctx.direction;
+	}
+	
 	private void generateApple() {
 		Pair[] arr = snake.list();
 		while (true) {
@@ -67,7 +76,8 @@ class Game {
 		if (mv.x == apple.x && mv.y == apple.y) {
 			snake.push_front(mv);
 			score++;
-			generateApple();
+			if (score == WIDTH * HEIGHT - 1) is_game_over = true;
+			else generateApple();
 		}
 		else {
 			snake.push_front(mv);
@@ -96,4 +106,6 @@ class Game {
 	public int getWidth() { return WIDTH; }
 	
 	public int getHeight() { return HEIGHT; }
+	
+	public GameContext getContext() { return new GameContext(snake, apple, score, WIDTH, HEIGHT, d); }
 }

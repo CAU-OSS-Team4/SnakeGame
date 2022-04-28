@@ -107,5 +107,5 @@ class Game {
 	
 	public int getHeight() { return HEIGHT; }
 	
-	public GameContext getContext() { return new GameContext(snake, apple, score, WIDTH, HEIGHT, d); }
+	public GameContext getContext() { return new GameContext(WIDTH, HEIGHT, snake, apple, score, d); }
 }

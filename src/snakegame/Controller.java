@@ -3,11 +3,13 @@ package snakegame;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Date;
 
 public class Controller implements ActionListener {
     private final Snake snake;
     private final Apple apple;
     private final MainMenu mainMenu;
+    private final RankingView rankingView;
     private final Board board;
     private JFrame frame;
     private JPanel panel;
@@ -22,22 +24,24 @@ public class Controller implements ActionListener {
 
     private final Timer timer;
 
-    public Controller(Snake snake, Apple apple, MainMenu mainMenu, Board board) {
+    public Controller(Snake snake, Apple apple, MainMenu mainMenu, RankingView rankingView, Board board) {
         this.snake = snake;
         this.apple = apple;
         this.mainMenu = mainMenu;
+        this.rankingView = rankingView;
         this.board = board;
 
         EventQueue.invokeLater(() -> {
             frame = new JFrame();
             cardLayout = new CardLayout();
             panel = new JPanel(cardLayout);
-            panel.add(mainMenu);
-            panel.add(board);
+            panel.add(mainMenu, "mainMenu");
+            panel.add(board, "board");
+            panel.add(rankingView, "rankingView");
             frame.add(panel);
 
             // 프로그램 시작시 MainMenu 화면이 먼저 보이도록 설정.
-            cardLayout.first(panel);
+            cardLayout.show(panel, "mainMenu");
 
             frame.setVisible(true);
 
@@ -56,14 +60,20 @@ public class Controller implements ActionListener {
 
         mainMenu.buttons[1].addActionListener(e -> {
             // TODO: load a saved game
+
         });
 
         mainMenu.buttons[2].addActionListener(e -> {
-            // TODO: display the top-ranked players' name and score
+            cardLayout.show(panel, "rankingView");
         });
 
         // terminate the game.
         mainMenu.buttons[3].addActionListener(e -> System.exit(0));
+
+        rankingView.backButton.addActionListener(e -> {
+            // MainMenu 화면으로 돌아감.
+            cardLayout.show(panel, "mainMenu");
+        });
 
         board.addKeyListener(new TAdapter());  // 방향키로 Snake 의 진행 방향을 변경하기 위한 KeyLister.
 
@@ -73,7 +83,7 @@ public class Controller implements ActionListener {
     // start the game.
     public void initGame() {
         // 게임 화면으로 전환함.
-        cardLayout.next(panel);
+        cardLayout.show(panel, "board");
 
         // generate an apple at a random location.
         apple.locateApple();

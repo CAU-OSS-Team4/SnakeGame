@@ -28,7 +28,7 @@ public class MainMenu extends JPanel {
         buttons[3].setText("EXIT");
 
         setLayout(null);
-        label.setBounds(0, 0, 950, 950);
+        label.setBounds(0, 0, 900, 900);
         buttons[0].setBounds(650, 575, 200, 50);
         buttons[1].setBounds(650, 650, 200, 50);
         buttons[2].setBounds(650, 725, 200, 50);

@@ -5,7 +5,8 @@ public class Main {
         Snake snake = new Snake();
         Apple apple = new Apple();
         MainMenu mainMenu = new MainMenu();
+        RankingView rankingView = new RankingView();
         Board board = new Board(snake, apple);
-        Controller controller = new Controller(snake, apple, mainMenu, board);
+        Controller controller = new Controller(snake, apple, mainMenu, rankingView, board);
     }
 }

@@ -95,7 +95,7 @@ public class GameBoard extends JPanel implements ActionListener {
         timer.stop();
         int score = this.backend.getScore();
         JFrame inputDialog = new JFrame();
-        String name = JOptionPane.showInputDialog(inputDialog, "Enter name");
+        String name = JOptionPane.showInputDialog(inputDialog, "Enter name").split(" ")[0];
         if (name != null) {
             RankingTableRow record = new RankingTableRow(name, score, new Date());
             try {

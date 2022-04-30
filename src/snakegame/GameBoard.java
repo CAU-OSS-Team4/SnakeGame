@@ -144,10 +144,10 @@ public class GameBoard extends JPanel implements ActionListener {
             e.printStackTrace();
         }
     }
-    public void load(GameContext gameContext){
+
+    public void load(GameContext gameContext) {
         initGame();
         backend.setContext(gameContext);
-
     }
 }
 

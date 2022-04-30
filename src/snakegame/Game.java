@@ -109,7 +109,7 @@ class Game {
 	
 	public GameContext getContext() { return new GameContext(WIDTH, HEIGHT, snake, apple, score, d); }
 
-	public void setContext(GameContext gameContext){
+	public void setContext(GameContext gameContext) {
 		this.WIDTH = gameContext.width;
 		this.HEIGHT = gameContext.height;
 		this.apple = gameContext.apple;

@@ -49,14 +49,13 @@ public class Controller{
         });
 
         mainMenu.buttons[1].addActionListener(e -> {
+            cardLayout.show(panel, "board");
             try {
-                cardLayout.show(panel, "board");
                 board.load(DataLoader.loadAndRemove());
-                board.requestFocusInWindow();
-
             } catch (Exception _e){
-                _e.printStackTrace();
+                board.initGame();
             }
+            board.requestFocusInWindow();
         });
 
         mainMenu.buttons[2].addActionListener(e -> {

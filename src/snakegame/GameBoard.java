@@ -142,8 +142,9 @@ public class GameBoard extends JPanel implements ActionListener {
         }
     }
     public void load(GameContext gameContext){
-        this.backend.setContext(gameContext);
-        timer.start();
+        initGame();
+        backend.setContext(gameContext);
+
     }
 }
 

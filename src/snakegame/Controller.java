@@ -25,7 +25,8 @@ public class Controller implements ActionListener {
 
     private final Timer timer;
 
-    public Controller(Snake snake, Apple apple, MainMenu mainMenu, RankingView rankingView, Board board) {
+    public Controller(Snake snake, Apple apple, MainMenu mainMenu,
+                      RankingView rankingView, Board board) {
         this.snake = snake;
         this.apple = apple;
         this.mainMenu = mainMenu;
@@ -206,11 +207,13 @@ public class Controller implements ActionListener {
         if (!inGame) {
             JFrame inputDialog = new JFrame();
             String name = JOptionPane.showInputDialog(inputDialog, "Enter name");
-            RankingTableRow record = new RankingTableRow(name, score, new Date());
-            try {
-                DataLoader.updateScoreboard(record);
-            } catch (Exception ex) {
-                System.out.println(ex.getMessage());
+            if (name != null) {
+                RankingTableRow record = new RankingTableRow(name, score, new Date());
+                try {
+                    DataLoader.updateScoreboard(record);
+                } catch (Exception ex) {
+                    System.out.println(ex.getMessage());
+                }
             }
 
             cardLayout.show(panel, "mainMenu");

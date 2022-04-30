@@ -69,7 +69,7 @@ public final class DataLoader {
 		
 		if (data[2].equals("NORTH")) direction = DIRECTION.NORTH;
 		else if (data[2].equals("SOUTH")) direction = DIRECTION.SOUTH;
-		else if (data.equals("EAST")) direction = DIRECTION.EAST;
+		else if (data[2].equals("EAST")) direction = DIRECTION.EAST;
 		else direction = DIRECTION.WEST;
 		System.out.println(data[2]);
 		

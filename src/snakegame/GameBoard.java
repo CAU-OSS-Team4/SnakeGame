@@ -117,10 +117,10 @@ public class GameBoard extends JPanel implements ActionListener {
                 backend.setDirection(DIRECTION.EAST);
             }
             if ((key == KeyEvent.VK_UP) && !(d==DIRECTION.SOUTH)) {
-                backend.setDirection(DIRECTION.SOUTH);
+                backend.setDirection(DIRECTION.NORTH);
             }
             if ((key == KeyEvent.VK_DOWN) && !(d==DIRECTION.NORTH)) {
-                backend.setDirection(DIRECTION.NORTH);
+                backend.setDirection(DIRECTION.SOUTH);
             }
             if (key == KeyEvent.VK_ESCAPE){
                 timer.stop();

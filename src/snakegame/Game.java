@@ -68,8 +68,8 @@ class Game {
 		if (is_game_over) return;
 		
 		Pair mv = snake.front();
-		if (d == DIRECTION.NORTH) mv.y++;
-		else if (d == DIRECTION.SOUTH) mv.y--;
+		if (d == DIRECTION.NORTH) mv.y--;
+		else if (d == DIRECTION.SOUTH) mv.y++;
 		else if (d == DIRECTION.EAST) mv.x++;
 		else if (d == DIRECTION.WEST) mv.x--;
 		

@@ -96,11 +96,13 @@ public class GameBoard extends JPanel implements ActionListener {
         int score = this.backend.getScore();
         JFrame inputDialog = new JFrame();
         String name = JOptionPane.showInputDialog(inputDialog, "Enter name");
-        RankingTableRow record = new RankingTableRow(name, score, new Date());
-        try {
-            DataLoader.updateScoreboard(record);
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
+        if (name != null) {
+            RankingTableRow record = new RankingTableRow(name, score, new Date());
+            try {
+                DataLoader.updateScoreboard(record);
+            } catch (Exception ex) {
+                System.out.println(ex.getMessage());
+            }
         }
         this.controller.showMainMenu();
     }

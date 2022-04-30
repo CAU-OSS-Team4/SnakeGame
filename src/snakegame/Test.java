@@ -1,5 +1,6 @@
 package snakegame;
 
+import java.util.Date;
 import java.util.Scanner;
 
 public class Test {
@@ -13,10 +14,39 @@ public class Test {
 			else if (ch == 's') game.setDirection(DIRECTION.SOUTH);
 			else if (ch == 'd') game.setDirection(DIRECTION.EAST);
 			else if (ch == 'a') game.setDirection(DIRECTION.WEST);
+			else if (ch == 'S') {
+				try {
+					DataLoader.saveGame(game.getContext());
+				} catch(Exception e) {
+					System.out.println(e.getMessage());
+				}
+			}
+			else if (ch == 'L') {
+				try {
+					game = new Game(DataLoader.loadGame());
+				} catch(Exception e) {
+					System.out.println(e.getMessage());
+				}
+			}
         	
-			game.progress();
+			if (ch == 'S') continue;
+			if (ch != 'L') game.progress();
+			
 			if (game.isGameOver()) {
 				System.out.println("game over!");
+				try {
+					String username = Integer.toString((int)(Math.random() * 1000000), 36);
+					int rank = DataLoader.updateScoreboard(new RankingTableRow(username, game.getScore(), new Date()));
+					
+					RankingTableRow[] ranking = DataLoader.loadRanking();
+					System.out.println("=====Scoreboard=====");
+					for (int n = 0; n < ranking.length; n++) {
+						System.out.println((n+1) + " " + ranking[n].score + " " + ranking[n].username + " " + DataLoader.format.format(ranking[n].date));
+					}
+					System.out.println("You are ranked " + rank);
+				} catch(Exception e) {
+					System.out.println(e.getMessage());
+				}
 				break;
 			}
         	

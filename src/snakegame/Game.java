@@ -68,8 +68,8 @@ class Game {
 		if (is_game_over) return;
 		
 		Pair mv = snake.front();
-		if (d == DIRECTION.NORTH) mv.y++;
-		else if (d == DIRECTION.SOUTH) mv.y--;
+		if (d == DIRECTION.NORTH) mv.y--;
+		else if (d == DIRECTION.SOUTH) mv.y++;
 		else if (d == DIRECTION.EAST) mv.x++;
 		else if (d == DIRECTION.WEST) mv.x--;
 		
@@ -108,4 +108,13 @@ class Game {
 	public int getHeight() { return HEIGHT; }
 	
 	public GameContext getContext() { return new GameContext(WIDTH, HEIGHT, snake, apple, score, d); }
+
+	public void setContext(GameContext gameContext) {
+		this.WIDTH = gameContext.width;
+		this.HEIGHT = gameContext.height;
+		this.apple = gameContext.apple;
+		this.snake = gameContext.snake;
+		this.score = gameContext.score;
+		setDirection(gameContext.direction);
+	}
 }

@@ -33,6 +33,7 @@ public class Controller implements ActionListener {
         this.rankingView = rankingView;
         this.board = board;
         score = 0;
+        timer = new Timer(DELAY, this);
 
         EventQueue.invokeLater(() -> {
             frame = new JFrame();
@@ -81,7 +82,26 @@ public class Controller implements ActionListener {
 
         board.addKeyListener(new TAdapter());  // 방향키로 Snake 의 진행 방향을 변경하기 위한 KeyLister.
 
-        timer = new Timer(DELAY, this);
+        board.ingameMenu.buttons[0].addActionListener(e -> {
+            timer.start();
+            board.ingameMenu.setVisible(false);
+        });
+
+        board.ingameMenu.buttons[1].addActionListener(e -> {
+            board.ingameMenu.setVisible(false);
+            initGame();
+        });
+
+        board.ingameMenu.buttons[2].addActionListener(e -> {
+            // TODO: SAVE
+            cardLayout.show(panel, "mainMenu");
+            board.ingameMenu.setVisible(false);
+        });
+
+        board.ingameMenu.buttons[3].addActionListener(e -> {
+            cardLayout.show(panel, "mainMenu");
+            board.ingameMenu.setVisible(false);
+        });
     }
 
     // start the game.
@@ -185,8 +205,8 @@ public class Controller implements ActionListener {
 
             // ECS 키를 누른 경우
             if (key == KeyEvent.VK_ESCAPE) {
-                // TODO
                 timer.stop();
+                board.ingameMenu.setVisible(true);
             }
         }
     }

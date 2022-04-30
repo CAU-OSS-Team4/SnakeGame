@@ -14,10 +14,16 @@ public class Board extends JPanel {
 
     private final Snake snake;
     private final Apple apple;
+    final IngameMenu ingameMenu;
 
     public Board(Snake snake, Apple apple) {
+        setLayout(null);
         this.snake = snake;
         this.apple = apple;
+        ingameMenu = new IngameMenu();
+        ingameMenu.setBounds(300, 300, 300, 300);
+        ingameMenu.setVisible(false);
+        add(ingameMenu);
 
         setBackground(Color.BLACK);  // 게임 화면의 background 색을 나타냄.
         setFocusable(true);

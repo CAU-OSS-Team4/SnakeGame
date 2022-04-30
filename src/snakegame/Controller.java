@@ -5,35 +5,19 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.Date;
 
-public class Controller implements ActionListener {
-    private final Snake snake;
-    private final Apple apple;
+public class Controller{
     private final MainMenu mainMenu;
     private final RankingView rankingView;
-    private final Board board;
+    private final GameBoard board;
     private JFrame frame;
     private JPanel panel;
     private CardLayout cardLayout;
-    private int score;
 
-    // 게임이 진행 중인지, 아니면 게임 오버 상태인지를 나타냄
-    // true: 게임이 진행 중인 상태, false: 게임 오버 상태
-    public static boolean inGame = true;
-
-    // 게임의 frame 속도(?)을 나타냄. DELAY 의 값이 작을 수록 게임의 진행 속도가 빨라진다.
-    private static final int DELAY = 50;
-
-    private final Timer timer;
-
-    public Controller(Snake snake, Apple apple, MainMenu mainMenu,
-                      RankingView rankingView, Board board) {
-        this.snake = snake;
-        this.apple = apple;
+    public Controller(MainMenu mainMenu, RankingView rankingView, GameBoard board) {
         this.mainMenu = mainMenu;
         this.rankingView = rankingView;
         this.board = board;
-        score = 0;
-        timer = new Timer(DELAY, this);
+        board.setController(this);
 
         EventQueue.invokeLater(() -> {
             frame = new JFrame();
@@ -59,7 +43,11 @@ public class Controller implements ActionListener {
         });
 
         mainMenu.buttons[0].addActionListener(e -> {
-            initGame();
+            cardLayout.show(panel, "board");
+            board.initGame();
+            board.requestFocusInWindow();
+
+
         });
 
         mainMenu.buttons[1].addActionListener(e -> {
@@ -80,16 +68,14 @@ public class Controller implements ActionListener {
             cardLayout.show(panel, "mainMenu");
         });
 
-        board.addKeyListener(new TAdapter());  // 방향키로 Snake 의 진행 방향을 변경하기 위한 KeyLister.
-
         board.ingameMenu.buttons[0].addActionListener(e -> {
-            timer.start();
+            board.timer.start();
             board.ingameMenu.setVisible(false);
         });
 
         board.ingameMenu.buttons[1].addActionListener(e -> {
             board.ingameMenu.setVisible(false);
-            initGame();
+            board.initGame();
         });
 
         board.ingameMenu.buttons[2].addActionListener(e -> {
@@ -104,139 +90,8 @@ public class Controller implements ActionListener {
         });
     }
 
-    // start the game.
-    public void initGame() {
-        // 게임 화면으로 전환함.
-        cardLayout.show(panel, "board");
-
-        inGame = true;
-        score = 0;
-        snake.init();
-
-        // generate an apple at a random location.
-        apple.locateApple();
-        board.requestFocusInWindow();  // activate keylistener.
-        timer.start();
+    public void showMainMenu(){
+        cardLayout.show(panel, "mainMenu");
     }
 
-    // check whether snake dies or not.
-    private void checkCollision() {
-        // TODO: snakes dies by running into its own body.
-        // TODO: This logic works incorrectly.
-        int[] x = snake.get_Xpos();
-        int[] y = snake.get_Ypos();
-
-        for (int z = snake.getDots(); z > 0; z--) {
-            if ((z > 4) && (x[0] == x[z]) && (y[0] == y[z])) {
-                inGame = false;
-            }
-        }
-
-        // 아래쪽 edge 에 충돌한 경우
-        if (y[0] >= Board.B_HEIGHT) {
-            inGame = false;
-        }
-
-        // 위쪽 edge 에 충돌한 경우
-        if (y[0] < 0) {
-            inGame = false;
-        }
-
-        // 오른쪽 edge 에 충돌한 경우
-        if (x[0] >= Board.B_WIDTH) {
-            inGame = false;
-        }
-
-        // 왼쪽 edge 에 충돌한 경우
-        if (x[0] < 0) {
-            inGame = false;
-        }
-
-        if (!inGame) {
-            timer.stop();
-        }
-    }
-
-    // If snake eats an apple, it gets longer
-    // and an apple appears at a random location.
-    private void checkApple() {
-        if ((snake.get_Xpos()[0] == apple.getApple_x())
-                && (snake.get_Ypos()[0] == apple.getApple_y())) {
-            score++;
-            snake.plusDots();
-            apple.locateApple();
-        }
-    }
-
-
-    // Key Event 받기 위한 Adapter
-    private class TAdapter extends KeyAdapter {
-        @Override
-        public void keyPressed(KeyEvent e) {
-            int key = e.getKeyCode();  // 입력받은 Key Code 값.
-
-            // 오른쪽으로 이동하지 않으면서 왼쪽 방향키를 누른 경우
-            if ((key == KeyEvent.VK_LEFT) && (!snake.isRightDirection())) {
-                snake.setLeftDirection(true);
-                snake.setUpDirection(false);
-                snake.setDownDirection(false);
-            }
-
-            // 왼쪽으로 이동하지 않으면서 오른쪽 방향키를 누른 경우
-            if ((key == KeyEvent.VK_RIGHT) && (!snake.isLeftDirection())) {
-                snake.setRightDirection(true);
-                snake.setUpDirection(false);
-                snake.setDownDirection(false);
-            }
-
-            // 아래쪽으로 이동하지 않으면서 위쪽 방향키를 누른 경우
-            if ((key == KeyEvent.VK_UP) && (!snake.isDownDirection())) {
-                snake.setLeftDirection(false);
-                snake.setRightDirection(false);
-                snake.setUpDirection(true);
-            }
-
-            // 위쪽으로 이동하지 않으면서 아래쪽 방향키를 누른 경우
-            if ((key == KeyEvent.VK_DOWN) && (!snake.isUpDirection())) {
-                snake.setLeftDirection(false);
-                snake.setRightDirection(false);
-                snake.setDownDirection(true);
-            }
-
-            // ECS 키를 누른 경우
-            if (key == KeyEvent.VK_ESCAPE) {
-                timer.stop();
-                board.ingameMenu.setVisible(true);
-            }
-        }
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        // 게임이 끝날 때까지 계속 반복
-        if (inGame) {
-            checkApple();
-            checkCollision();
-            snake.move();
-        }
-
-        // 생성된 사과, 이동한 snake 의 위치 등을 반영하여 게임 화면에 그려냄.
-        board.repaint();
-
-        // 게임이 끝난 경우
-        if (!inGame) {
-            JFrame inputDialog = new JFrame();
-            String name = JOptionPane.showInputDialog(inputDialog, "Enter name");
-            if (name != null) {
-                RankingTableRow record = new RankingTableRow(name, score, new Date());
-                try {
-                    DataLoader.updateScoreboard(record);
-                } catch (Exception ex) {
-                    System.out.println(ex.getMessage());
-                }
-            }
-
-            cardLayout.show(panel, "mainMenu");
-        }
-    }
 }

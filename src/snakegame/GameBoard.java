@@ -110,16 +110,16 @@ public class GameBoard extends JPanel implements ActionListener {
         public void keyPressed(KeyEvent e) {
             DIRECTION d = backend.getDirection();
             int key = e.getKeyCode();
-            if ((key == KeyEvent.VK_LEFT) && !(d==DIRECTION.WEST)) {
+            if ((key == KeyEvent.VK_LEFT) && !(d==DIRECTION.EAST)) {
                 backend.setDirection(DIRECTION.WEST);
             }
-            if ((key == KeyEvent.VK_RIGHT) && !(d==DIRECTION.EAST)) {
+            if ((key == KeyEvent.VK_RIGHT) && !(d==DIRECTION.WEST)) {
                 backend.setDirection(DIRECTION.EAST);
             }
-            if ((key == KeyEvent.VK_UP) && !(d==DIRECTION.NORTH)) {
+            if ((key == KeyEvent.VK_UP) && !(d==DIRECTION.SOUTH)) {
                 backend.setDirection(DIRECTION.SOUTH);
             }
-            if ((key == KeyEvent.VK_DOWN) && !(d==DIRECTION.SOUTH)) {
+            if ((key == KeyEvent.VK_DOWN) && !(d==DIRECTION.NORTH)) {
                 backend.setDirection(DIRECTION.NORTH);
             }
             if (key == KeyEvent.VK_ESCAPE){
@@ -131,6 +131,19 @@ public class GameBoard extends JPanel implements ActionListener {
 
     public void setController(Controller controller) {
         this.controller = controller;
+    }
+
+    public void save(){
+        GameContext gameContext = backend.getContext();
+        try {
+            DataLoader.saveGame(gameContext);
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    public void load(GameContext gameContext){
+        this.backend.setContext(gameContext);
+        timer.start();
     }
 }
 

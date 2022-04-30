@@ -46,13 +46,17 @@ public class Controller{
             cardLayout.show(panel, "board");
             board.initGame();
             board.requestFocusInWindow();
-
-
         });
 
         mainMenu.buttons[1].addActionListener(e -> {
-            // TODO: load a saved game
+            try {
+                cardLayout.show(panel, "board");
+                board.load(DataLoader.loadAndRemove());
+                board.requestFocusInWindow();
 
+            } catch (Exception _e){
+                _e.printStackTrace();
+            }
         });
 
         mainMenu.buttons[2].addActionListener(e -> {
@@ -79,7 +83,7 @@ public class Controller{
         });
 
         board.ingameMenu.buttons[2].addActionListener(e -> {
-            // TODO: SAVE
+            board.save();
             cardLayout.show(panel, "mainMenu");
             board.ingameMenu.setVisible(false);
         });
@@ -93,5 +97,4 @@ public class Controller{
     public void showMainMenu(){
         cardLayout.show(panel, "mainMenu");
     }
-
 }

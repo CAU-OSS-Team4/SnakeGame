@@ -33,7 +33,7 @@ class GameContext {
 }
 
 public final class DataLoader {
-	public static final String DATA_FILES_PATH = "/snakegame/data";
+	public static final String DATA_FILES_PATH = "./snakegame/data";
 	public static final String RANKING_FILE_NAME = "rank";
 	public static final String SAVE_FILE_NAME = "save";
 	public static final SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd.HH:mm:ss");

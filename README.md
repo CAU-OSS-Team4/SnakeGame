@@ -1,7 +1,7 @@
 # SnakeGame 
 
 
-### Basic roles of the game
+### Basic rules of the game
 - The size of the board is 40 x 40 or larger.
 - The snake starts at the center of the board, moving north (upward).
 - The snake moves at a constant speed.

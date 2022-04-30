@@ -1,7 +1,7 @@
 package snakegame;
 
 import java.awt.*;
-import javax.swing.JPanel;
+import javax.swing.*;
 
 public class Board extends JPanel {
     // size of Board

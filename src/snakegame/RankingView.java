@@ -12,11 +12,10 @@ public class RankingView extends JPanel {
     private final JLabel backgroundImg;
     final JButton backButton;
     private final JLabel[] labels;
-    private final JLabel[] rankingLabels;
-    private final JLabel[] scoreLabels;
-    private final JLabel[] nameLabels;
-    private final JLabel[] dateLabels;
-
+    private JLabel[] rankingLabels;
+    private JLabel[] scoreLabels;
+    private JLabel[] nameLabels;
+    private JLabel[] dateLabels;
 
     public RankingView() {
         setLayout(null);
@@ -47,32 +46,27 @@ public class RankingView extends JPanel {
         nameLabels = new JLabel[10];
         dateLabels = new JLabel[10];
 
-        try {
-            RankingTableRow[] ret = DataLoader.loadRanking();
-            for (int i = 0; i < 10 ; i++) {
-                rankingLabels[i] = new JLabel("" + (i + 1));
-                scoreLabels[i] = new JLabel("" + ret[i].score);
-                nameLabels[i] = new JLabel(ret[i].username);
-                dateLabels[i] = new JLabel(DataLoader.format.format(ret[i].date));
-                rankingLabels[i].setBounds(90, 245 + 65 * i, 100, 60);
-                scoreLabels[i].setBounds(220, 245 + 65 * i, 100, 60);
-                nameLabels[i].setBounds(370, 245 + 65 * i, 100, 60);
-                dateLabels[i].setBounds(550, 245 + 65 * i, 300, 60);
-                rankingLabels[i].setForeground(Color.WHITE);
-                scoreLabels[i].setForeground(Color.WHITE);
-                nameLabels[i].setForeground(Color.WHITE);
-                dateLabels[i].setForeground(Color.WHITE);
-                rankingLabels[i].setFont(new Font("Default", Font.BOLD, 26));
-                scoreLabels[i].setFont(new Font("Default", Font.BOLD, 26));
-                nameLabels[i].setFont(new Font("Default", Font.BOLD, 26));
-                dateLabels[i].setFont(new Font("Default", Font.BOLD, 26));
-                add(rankingLabels[i]);
-                add(scoreLabels[i]);
-                add(nameLabels[i]);
-                add(dateLabels[i]);
-            }
-        } catch (Exception e) {
-            System.out.println("Finish reading data");
+        for (int i = 0; i < 10 ; i++) {
+            rankingLabels[i] = new JLabel();
+            scoreLabels[i] = new JLabel();
+            nameLabels[i] = new JLabel();
+            dateLabels[i] = new JLabel();
+            rankingLabels[i].setBounds(90, 245 + 65 * i, 100, 60);
+            scoreLabels[i].setBounds(220, 245 + 65 * i, 100, 60);
+            nameLabels[i].setBounds(370, 245 + 65 * i, 100, 60);
+            dateLabels[i].setBounds(550, 245 + 65 * i, 300, 60);
+            rankingLabels[i].setForeground(Color.WHITE);
+            scoreLabels[i].setForeground(Color.WHITE);
+            nameLabels[i].setForeground(Color.WHITE);
+            dateLabels[i].setForeground(Color.WHITE);
+            rankingLabels[i].setFont(new Font("Default", Font.BOLD, 26));
+            scoreLabels[i].setFont(new Font("Default", Font.BOLD, 26));
+            nameLabels[i].setFont(new Font("Default", Font.BOLD, 26));
+            dateLabels[i].setFont(new Font("Default", Font.BOLD, 26));
+            add(rankingLabels[i]);
+            add(scoreLabels[i]);
+            add(nameLabels[i]);
+            add(dateLabels[i]);
         }
 
         for (int i = 0; i < 5; i++) {
@@ -86,5 +80,19 @@ public class RankingView extends JPanel {
         setBackground(Color.WHITE);  // RankingView 의 background 색을 나타냄.
         setFocusable(true);
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
+    }
+
+    public void init() {
+        try {
+            RankingTableRow[] ret = DataLoader.loadRanking();
+            for (int i = 0; i < 10 ; i++) {
+                scoreLabels[i].setText("" + ret[i].score);
+                nameLabels[i].setText(ret[i].username);
+                dateLabels[i].setText(DataLoader.format.format(ret[i].date));
+                rankingLabels[i].setText("" + (i + 1));
+            }
+        } catch (Exception e) {
+            System.out.println("Finish reading data");
+        }
     }
 }

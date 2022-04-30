@@ -14,6 +14,7 @@ public class Controller implements ActionListener {
     private JFrame frame;
     private JPanel panel;
     private CardLayout cardLayout;
+    private int score;
 
     // 게임이 진행 중인지, 아니면 게임 오버 상태인지를 나타냄
     // true: 게임이 진행 중인 상태, false: 게임 오버 상태
@@ -30,6 +31,7 @@ public class Controller implements ActionListener {
         this.mainMenu = mainMenu;
         this.rankingView = rankingView;
         this.board = board;
+        score = 0;
 
         EventQueue.invokeLater(() -> {
             frame = new JFrame();
@@ -65,6 +67,7 @@ public class Controller implements ActionListener {
 
         mainMenu.buttons[2].addActionListener(e -> {
             cardLayout.show(panel, "rankingView");
+            rankingView.init();
         });
 
         // terminate the game.
@@ -84,6 +87,10 @@ public class Controller implements ActionListener {
     public void initGame() {
         // 게임 화면으로 전환함.
         cardLayout.show(panel, "board");
+
+        inGame = true;
+        score = 0;
+        snake.init();
 
         // generate an apple at a random location.
         apple.locateApple();
@@ -134,6 +141,7 @@ public class Controller implements ActionListener {
     private void checkApple() {
         if ((snake.get_Xpos()[0] == apple.getApple_x())
                 && (snake.get_Ypos()[0] == apple.getApple_y())) {
+            score++;
             snake.plusDots();
             apple.locateApple();
         }
@@ -173,6 +181,12 @@ public class Controller implements ActionListener {
                 snake.setRightDirection(false);
                 snake.setDownDirection(true);
             }
+
+            // ECS 키를 누른 경우
+            if (key == KeyEvent.VK_ESCAPE) {
+                // TODO
+                timer.stop();
+            }
         }
     }
 
@@ -187,5 +201,19 @@ public class Controller implements ActionListener {
 
         // 생성된 사과, 이동한 snake 의 위치 등을 반영하여 게임 화면에 그려냄.
         board.repaint();
+
+        // 게임이 끝난 경우
+        if (!inGame) {
+            JFrame inputDialog = new JFrame();
+            String name = JOptionPane.showInputDialog(inputDialog, "Enter name");
+            RankingTableRow record = new RankingTableRow(name, score, new Date());
+            try {
+                DataLoader.updateScoreboard(record);
+            } catch (Exception ex) {
+                System.out.println(ex.getMessage());
+            }
+
+            cardLayout.show(panel, "mainMenu");
+        }
     }
 }

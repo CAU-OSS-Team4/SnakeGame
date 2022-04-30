@@ -1,36 +1,8 @@
 package snakegame;
 
 import java.io.*;
-import java.util.*;
 import java.text.SimpleDateFormat;
 
-class RankingTableRow implements Comparable {
-	String username;
-	int score;
-	Date date;
-	public RankingTableRow(String u, int s, Date d) {
-		username = u; score = s; date = d;
-	}
-	
-	@Override
-	public int compareTo(Object o) {
-		RankingTableRow row = (RankingTableRow)o;
-		if (score != row.score) return -(((Integer)score).compareTo(row.score));
-		if (date.compareTo(row.date) != 0) return date.compareTo(row.date);
-		return username.compareTo(row.username);
-	}
-}
-
-class GameContext {
-	int width, height;
-	Deque snake;
-	Pair apple;
-	int score;
-	DIRECTION direction;
-	GameContext(int w, int h, Deque _snake, Pair _apple, int _score, DIRECTION _direction) {
-		width = w; height = h; snake = _snake; apple = _apple; score = _score; direction = _direction;
-	}
-}
 
 public final class DataLoader {
 	public static final String DATA_FILES_PATH = "./snakegame/data";

@@ -2,7 +2,7 @@ package snakegame;
 
 enum DIRECTION { NORTH, SOUTH, EAST, WEST }
 
-class Game {
+public class Game {
 	private int WIDTH = 40;
 	private int HEIGHT = 40;
 	

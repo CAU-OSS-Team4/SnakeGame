@@ -1,6 +1,6 @@
 package snakegame;
 
-class Deque {
+public class Deque {
 	private int max_size;
 	private Pair arr[];
 	private int s, e;

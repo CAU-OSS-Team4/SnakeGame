@@ -108,13 +108,25 @@ public class Game {
 			}
 			if (mv.x < 0 || WIDTH <= mv.x || mv.y < 0 || HEIGHT <= mv.y) game_over[i] = true;
 		}
+		
+		int sum = 0;
+		for (int i = 0; i < players.length; i++) sum += players[i].getScore();
+		
+		if (sum + players.length + apples.length > WIDTH * HEIGHT) {
+			for (int i = 0; i < players.length; i++) game_over[i] = true;
+		}
+		else {
+			for (int i = 0; i < apples.length; i++) {
+				if (eaten[i]) generateApple(i);
+			}
+		}
 
 		for (int i = 0; i < players.length; i++) {
 			if (game_over[i]) players[i].gameOver();
 		}
 	}
 	
-	public Pair[] getApple() { 
+	public Pair[] getApples() { 
 		Pair[] ret = new Pair[apples.length];
 		for (int i = 0; i < apples.length; i++) ret[i] = new Pair(apples[0].x, apples[0].y);
 		return ret;

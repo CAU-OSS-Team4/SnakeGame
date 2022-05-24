@@ -1,6 +1,7 @@
 package snakegame;
 
 enum DIRECTION { NORTH, SOUTH, EAST, WEST }
+enum PlayerType { PLAYER1, PLAYER2, AUTO } 
 
 public class Player {
 	private int score;
@@ -8,9 +9,10 @@ public class Player {
 	
 	private DIRECTION direction;
 	private Deque snake;
+	private PlayerType ptype;
 	
-	public Player(Deque _snake, DIRECTION _direction, int _score, boolean over) {
-		snake = _snake; direction = _direction; score = _score; is_game_over = over;
+	public Player(Deque _snake, DIRECTION _direction, int _score, boolean over, PlayerType t) {
+		snake = _snake; direction = _direction; score = _score; is_game_over = over; ptype = t;
 	}
 
 	public Pair[] getSnake() { return snake.list(); }
@@ -30,6 +32,8 @@ public class Player {
 	public void snake_pop_back() { snake.pop_back(); }
 	
 	public void scoreIncrease() { score++; }
+	
+	public PlayerType getType() { return ptype; }
 	
 	public void decide(GameContext ctx) {}
 }

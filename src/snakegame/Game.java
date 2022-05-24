@@ -11,7 +11,7 @@ public class Game {
 		players = new Player[1];
 		Deque snake = new Deque(WIDTH * HEIGHT + 1);
 		snake.push_front(new Pair(WIDTH / 2, HEIGHT / 2));
-		players[0] = new Player(snake, DIRECTION.NORTH, 0, false);
+		players[0] = new Player(snake, DIRECTION.NORTH, 0, false, PlayerType.PLAYER1);
 		
 		apples = new Pair[1];
 		apples[0] = new Pair(-1, -1);
@@ -71,7 +71,7 @@ public class Game {
 			if (players[i].isGameOver()) continue;
 			Pair mv = players[i].getSnake()[0];
 			
-			players[i].decide(getContext());
+			if (players[i].getType() == PlayerType.AUTO) players[i].decide(getContext());
 			if (players[i].getDirection() == DIRECTION.NORTH) mv.y--;
 			else if (players[i].getDirection() == DIRECTION.SOUTH) mv.y++;
 			else if (players[i].getDirection() == DIRECTION.EAST) mv.x++;

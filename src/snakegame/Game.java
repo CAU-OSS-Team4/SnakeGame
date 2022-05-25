@@ -7,32 +7,14 @@ public class Game {
 	private Pair[] apples;
 	private Player[] players;
 	
-	public void init() {
-		players = new Player[1];
-		Deque snake = new Deque(WIDTH * HEIGHT + 1);
-		snake.push_front(new Pair(WIDTH / 2, HEIGHT / 2));
-		players[0] = new Player(snake, DIRECTION.NORTH, 0, false, PlayerType.PLAYER1);
-		
-		apples = new Pair[1];
-		apples[0] = new Pair(-1, -1);
-		generateApple(0);
-	}
-	
-	public Game() {
-		init();
-	}
-	
-	public Game(int w, int h) {
-		WIDTH = w;
-		HEIGHT = h;
-		init();
-	}
-	
-	public Game(GameContext ctx) {
+	public Game(GameContext ctx, boolean init) {
 		players = ctx.players;
 		apples = ctx.apples;
 		WIDTH = ctx.width;
 		HEIGHT = ctx.height;
+		if (init) {
+			for (int i = 0; i < apples.length; i++) generateApple(i);
+		}
 	}
 	
 	private void generateApple(int n) {

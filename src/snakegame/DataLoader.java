@@ -53,6 +53,7 @@ public final class DataLoader {
 				int y = Integer.parseInt(data[5+n].split(":")[1]);
 				snake.push_back(new Pair(x, y));
 			}
+			players[i] = new Player(snake, direction, score, over, ptype);
 		}
 		
 		line = br.readLine(); if (line.endsWith("\n")) line = line.substring(0, line.length()-1);

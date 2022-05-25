@@ -28,7 +28,7 @@ public class GameFactory {
 
 		snake = new Deque(width * height + 1);
 		snake.push_front(new Pair(width - 1, height - 1));
-		players[2] = new Player(snake, DIRECTION.NORTH, 0, false, PlayerType.PLAYER2);
+		players[1] = new Player(snake, DIRECTION.NORTH, 0, false, PlayerType.PLAYER2);
 		
 		Pair[] apples = new Pair[2];
 		apples[0] = new Pair(-1, -1);
@@ -49,7 +49,7 @@ public class GameFactory {
 
 		snake = new Deque(width * height + 1);
 		snake.push_front(new Pair(width - 1, height - 1));
-		players[2] = new Player(snake, DIRECTION.NORTH, 0, false, PlayerType.AUTO);
+		players[1] = new Player(snake, DIRECTION.NORTH, 0, false, PlayerType.AUTO);
 		
 		Pair[] apples = new Pair[2];
 		apples[0] = new Pair(-1, -1);

@@ -25,7 +25,7 @@ public class Game {
 			for (int i = 0; i < players.length; i++) {
 				Pair[] arr = players[i].getSnake();
 				for (int j = 0; j < arr.length; j++) {
-					if (arr[i].x == x && arr[i].y == y) {
+					if (arr[j].x == x && arr[j].y == y) {
 						valid = false;
 						break;
 					}
@@ -33,7 +33,7 @@ public class Game {
 			}
 			for (int i = 0; i < apples.length; i++) {
 				if (i == n) continue;
-				if (apples[n].x == x && apples[n].y == y) valid = false;
+				if (apples[i].x == x && apples[i].y == y) valid = false;
 			}
 			if (valid) {
 				apples[n].x = x;
@@ -85,7 +85,7 @@ public class Game {
 				Pair[] arr = players[j].getSnake();
 				for (int k = 0; k < arr.length; k++) {
 					if (i == j && k == 0) continue;
-					if (arr[i].x == mv.x && arr[i].y == mv.y) game_over[i] = true;
+					if (arr[k].x == mv.x && arr[k].y == mv.y) game_over[i] = true;
 				}
 			}
 			if (mv.x < 0 || WIDTH <= mv.x || mv.y < 0 || HEIGHT <= mv.y) game_over[i] = true;
@@ -110,7 +110,7 @@ public class Game {
 	
 	public Pair[] getApples() { 
 		Pair[] ret = new Pair[apples.length];
-		for (int i = 0; i < apples.length; i++) ret[i] = new Pair(apples[0].x, apples[0].y);
+		for (int i = 0; i < apples.length; i++) ret[i] = new Pair(apples[i].x, apples[i].y);
 		return ret;
 	}
 	

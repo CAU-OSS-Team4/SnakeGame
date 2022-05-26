@@ -10,6 +10,7 @@ public class Controller{
     private JFrame frame;
     private JPanel panel;
     private CardLayout cardLayout;
+    private String gameMode;
 
     public Controller(MainMenu mainMenu, RankingView rankingView, GameBoard board) {
         this.mainMenu = mainMenu;
@@ -43,18 +44,23 @@ public class Controller{
         // SINGLE PLAY
         mainMenu.buttons[0].addActionListener(e -> {
             cardLayout.show(panel, "board");
-            board.initGame();
+            board.initSinglePlay();
             board.requestFocusInWindow();
+            gameMode = "SINGLE PLAY";
         });
 
         // DUAL PLAY
         mainMenu.buttons[1].addActionListener(e -> {
             // TODO: DUAL PLAY
+            gameMode = "DUAL PLAY";
         });
 
         // AUTO PLAY
         mainMenu.buttons[2].addActionListener(e -> {
-            // TODO: AUTO PLAY
+            cardLayout.show(panel, "board");
+            board.initAutoPlay();
+            board.requestFocusInWindow();
+            gameMode = "AUTO PLAY";
         });
 
         // LOAD
@@ -63,9 +69,10 @@ public class Controller{
             try {
                 board.load(DataLoader.loadAndRemove());
             } catch (Exception _e){
-                board.initGame();
+                board.initSinglePlay();
             } finally {
                 board.requestFocusInWindow();
+                gameMode = "SINGLE PLAY";
             }
         });
 
@@ -83,23 +90,37 @@ public class Controller{
             cardLayout.show(panel, "mainMenu");
         });
 
+        // EXIT
         board.ingameMenu.buttons[0].addActionListener(e -> {
-            board.timer.start();
-            board.ingameMenu.setVisible(false);
-        });
-
-        board.ingameMenu.buttons[1].addActionListener(e -> {
-            board.ingameMenu.setVisible(false);
-            board.initGame();
-        });
-
-        board.ingameMenu.buttons[2].addActionListener(e -> {
-            board.save();
             cardLayout.show(panel, "mainMenu");
             board.ingameMenu.setVisible(false);
         });
 
+        // RESUME
+        board.ingameMenu.buttons[1].addActionListener(e -> {
+            board.timer.start();
+            board.ingameMenu.setVisible(false);
+        });
+
+        // RESTART
+        board.ingameMenu.buttons[2].addActionListener(e -> {
+            board.ingameMenu.setVisible(false);
+            switch (gameMode) {
+                case "SINGLE PLAY":
+                    board.initSinglePlay();
+                    break;
+                case "DUAL PLAY":
+                    board.initDualPlay();
+                    break;
+                case "AUTO PLAY":
+                    board.initAutoPlay();
+                    break;
+            }
+        });
+
+        // SAVE
         board.ingameMenu.buttons[3].addActionListener(e -> {
+            board.save();
             cardLayout.show(panel, "mainMenu");
             board.ingameMenu.setVisible(false);
         });

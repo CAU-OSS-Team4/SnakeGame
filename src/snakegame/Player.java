@@ -35,5 +35,7 @@ public class Player {
 	
 	public PlayerType getType() { return ptype; }
 	
-	public void decide(GameContext ctx) {}
+	public void decide(GameContext ctx) {
+		// TODO: AUTO PLAY
+	}
 }

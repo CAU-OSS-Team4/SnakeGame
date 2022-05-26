@@ -51,8 +51,21 @@ public class GameBoard extends JPanel implements ActionListener {
         this.bodyImg = iid.getImage();
     }
 
-    public void initGame(){
+    public void initSinglePlay(){
+        ingameMenu.enableSave();
         this.backend = GameFactory.createSingleMode();
+        timer = new Timer(DELAY, this);
+        timer.start();
+    }
+
+    public void initDualPlay() {
+        // TODO: implement DUAL PLAY
+        ingameMenu.disableSave();
+    }
+
+    public void initAutoPlay() {
+        ingameMenu.disableSave();
+        this.backend = GameFactory.createAutoMode();
         timer = new Timer(DELAY, this);
         timer.start();
     }
@@ -166,23 +179,38 @@ public class GameBoard extends JPanel implements ActionListener {
         // TODO: make KeyListener working on dual play mode and auto play mode
         @Override
         public void keyPressed(KeyEvent e) {
-            DIRECTION d = backend.getPlayers()[0].getDirection();
-            int key = e.getKeyCode();
-            if ((key == KeyEvent.VK_LEFT) && !(d==DIRECTION.EAST)) {
-                backend.getPlayers()[0].setDirection(DIRECTION.WEST);
-            }
-            if ((key == KeyEvent.VK_RIGHT) && !(d==DIRECTION.WEST)) {
-                backend.getPlayers()[0].setDirection(DIRECTION.EAST);
-            }
-            if ((key == KeyEvent.VK_UP) && !(d==DIRECTION.SOUTH)) {
-                backend.getPlayers()[0].setDirection(DIRECTION.NORTH);
-            }
-            if ((key == KeyEvent.VK_DOWN) && !(d==DIRECTION.NORTH)) {
-                backend.getPlayers()[0].setDirection(DIRECTION.SOUTH);
-            }
-            if (key == KeyEvent.VK_ESCAPE){
-                timer.stop();
-                ingameMenu.setVisible(true);
+            if (backend.getPlayers().length == 1) {
+                DIRECTION d = backend.getPlayers()[0].getDirection();
+                int key = e.getKeyCode();
+
+                if (backend.getPlayers()[0].getType() == PlayerType.PLAYER1) {
+                    // SINGLE PLAY
+                    if ((key == KeyEvent.VK_LEFT) && !(d==DIRECTION.EAST)) {
+                        backend.getPlayers()[0].setDirection(DIRECTION.WEST);
+                    }
+                    if ((key == KeyEvent.VK_RIGHT) && !(d==DIRECTION.WEST)) {
+                        backend.getPlayers()[0].setDirection(DIRECTION.EAST);
+                    }
+                    if ((key == KeyEvent.VK_UP) && !(d==DIRECTION.SOUTH)) {
+                        backend.getPlayers()[0].setDirection(DIRECTION.NORTH);
+                    }
+                    if ((key == KeyEvent.VK_DOWN) && !(d==DIRECTION.NORTH)) {
+                        backend.getPlayers()[0].setDirection(DIRECTION.SOUTH);
+                    }
+                    if (key == KeyEvent.VK_ESCAPE){
+                        timer.stop();
+                        ingameMenu.setVisible(true);
+                    }
+                } else {
+                    // AUTO PLAY
+                    if ((key == KeyEvent.VK_ESCAPE)) {
+                        timer.stop();
+                        ingameMenu.setVisible(true);
+                    }
+                }
+            } else {
+                // DUAL PLAY
+                // TODO: implement KeyListener for DUAL PLAY
             }
         }
     }
@@ -201,7 +229,7 @@ public class GameBoard extends JPanel implements ActionListener {
     }
 
     public void load(GameContext gameContext) {
-        initGame();
+        initSinglePlay();
         backend.setContext(gameContext);
     }
 }

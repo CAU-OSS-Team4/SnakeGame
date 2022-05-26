@@ -21,7 +21,6 @@ public class GameFactory {
 		int height = 80;
 		
 		Player[] players = new Player[2];
-		
 		Deque snake = new Deque(width * height + 1);
 		snake.push_front(new Pair(0, 0));
 		players[0] = new Player(snake, DIRECTION.SOUTH, 0, false, PlayerType.PLAYER1);
@@ -42,7 +41,6 @@ public class GameFactory {
 		int height = 40;
 		
 		Player[] players = new Player[1];
-		
 		Deque snake = new Deque(width * height + 1);
 		snake.push_front(new Pair(width / 2, height / 2));
 		players[0] = new Player(snake, DIRECTION.NORTH, 0, false, PlayerType.AUTO);

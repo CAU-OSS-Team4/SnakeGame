@@ -64,6 +64,7 @@ public class GameBoard extends JPanel implements ActionListener {
 
     }
     private void doDrawing(Graphics g){
+        // SINGLE PLAY & AUTO PLAY
         if (this.backend.getPlayers().length == 1) {
             if(!this.backend.getPlayers()[0].isGameOver()) {
                 Pair apple = backend.getApples()[0];
@@ -80,6 +81,7 @@ public class GameBoard extends JPanel implements ActionListener {
                 Toolkit.getDefaultToolkit().sync();
             }
         } else {
+            // DUAL PLAY
             if(!this.backend.getPlayers()[0].isGameOver() && !this.backend.getPlayers()[1].isGameOver()) {
                 Pair[] apples = backend.getApples();
 
@@ -108,6 +110,7 @@ public class GameBoard extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        // SINGLE PLAY & AUTO PLAY
         if (this.backend.getPlayers().length == 1) {
             if (!this.backend.getPlayers()[0].isGameOver()) {
                 this.backend.progress();
@@ -115,6 +118,7 @@ public class GameBoard extends JPanel implements ActionListener {
                 gameOver();
             }
         } else {
+            // DUAL PLAY
             if (!this.backend.getPlayers()[0].isGameOver() && !this.backend.getPlayers()[1].isGameOver()) {
                 this.backend.progress();
             } else{
@@ -125,29 +129,37 @@ public class GameBoard extends JPanel implements ActionListener {
     }
 
     private void gameOver() {
+        timer.stop();
         if (this.backend.getPlayers().length == 1) {
-            // Single Play Mode
-            timer.stop();
-            int score = this.backend.getPlayers()[0].getScore();
-            JFrame inputDialog = new JFrame();
-            String name = JOptionPane.showInputDialog(inputDialog, "Enter name");
-            if (name != null) {
-                name = name.split(" ")[0];
-                RankingTableRow record = new RankingTableRow(name, score, new Date());
-                try {
-                    DataLoader.updateScoreboard(record);
-                } catch (Exception ex) {
-                    System.out.println(ex.getMessage());
+            if (this.backend.getPlayers()[0].getType() == PlayerType.PLAYER1) {
+                // SINGLE PLAY Mode
+                int score = this.backend.getPlayers()[0].getScore();
+                JFrame inputDialog = new JFrame();
+                JOptionPane.showMessageDialog(new JFrame(), "Score: " + score);
+                String name = JOptionPane.showInputDialog(inputDialog, "Enter name");
+                if (name != null) {
+                    name = name.split(" ")[0];
+                    RankingTableRow record = new RankingTableRow(name, score, new Date());
+                    try {
+                        DataLoader.updateScoreboard(record);
+                    } catch (Exception ex) {
+                        System.out.println(ex.getMessage());
+                    }
                 }
+            } else {
+                // AUTO PLAY Mode
+                int score = this.backend.getPlayers()[0].getScore();
+                JOptionPane.showMessageDialog(new JFrame(), "Score: " + score);
             }
-            this.controller.showMainMenu();
-        } else if (this.backend.getPlayers()[1].getType() == PlayerType.PLAYER2){
-            // Dual Play Mode
-            // TODO: display who is winner when dual play mode is over.
         } else {
-            // Auto Play Mode
-            // TODO: display score when auto play mode is over.
+            // DUAL PLAY Mode
+            if (this.backend.getPlayers()[0].isGameOver()) {
+                JOptionPane.showMessageDialog(new JFrame(), "Winner is PLAYER 2");
+            } else {
+                JOptionPane.showMessageDialog(new JFrame(), "Winner is PLAYER 1");
+            }
         }
+        this.controller.showMainMenu();
     }
 
     private class TAdapter extends KeyAdapter {

@@ -126,4 +126,8 @@ public class Game {
 		this.apples = gameContext.apples;
 		this.players = gameContext.players;
 	}
+
+	public Player[] getPlayers() {
+		return players;
+	}
 }

@@ -52,7 +52,7 @@ public class GameBoard extends JPanel implements ActionListener {
     }
 
     public void initGame(){
-        this.backend = new Game();
+        this.backend = GameFactory.createSingleMode();
         timer = new Timer(DELAY, this);
         timer.start();
     }
@@ -64,66 +64,109 @@ public class GameBoard extends JPanel implements ActionListener {
 
     }
     private void doDrawing(Graphics g){
-        if(!this.backend.isGameOver()) {
-            Pair apple = backend.getApple();
+        if (this.backend.getPlayers().length == 1) {
+            if(!this.backend.getPlayers()[0].isGameOver()) {
+                Pair apple = backend.getApples()[0];
 
-            g.drawImage(appleImg, apple.x*EXPAND_RATE, apple.y*EXPAND_RATE, this);
+                g.drawImage(appleImg, apple.x*EXPAND_RATE, apple.y*EXPAND_RATE, this);
 
-            Pair[] snake = backend.getSnake();
-            for (int i=0;i<snake.length;i++) {
-                if (i == 0)
-                    g.drawImage(headImg, snake[i].x*EXPAND_RATE, snake[i].y*EXPAND_RATE, this);
-                else
-                    g.drawImage(bodyImg, snake[i].x*EXPAND_RATE, snake[i].y*EXPAND_RATE, this);
+                Pair[] snake = backend.getPlayers()[0].getSnake();
+                for (int i=0;i<snake.length;i++) {
+                    if (i == 0)
+                        g.drawImage(headImg, snake[i].x*EXPAND_RATE, snake[i].y*EXPAND_RATE, this);
+                    else
+                        g.drawImage(bodyImg, snake[i].x*EXPAND_RATE, snake[i].y*EXPAND_RATE, this);
+                }
+                Toolkit.getDefaultToolkit().sync();
             }
-            Toolkit.getDefaultToolkit().sync();
+        } else {
+            if(!this.backend.getPlayers()[0].isGameOver() && !this.backend.getPlayers()[1].isGameOver()) {
+                Pair[] apples = backend.getApples();
+
+                g.drawImage(appleImg, apples[0].x*EXPAND_RATE, apples[0].y*EXPAND_RATE, this);
+                g.drawImage(appleImg, apples[1].x*EXPAND_RATE, apples[1].y*EXPAND_RATE, this);
+
+                Pair[][] snakes = new Pair[2][];
+                for (int i = 0; i < 2; i++) {
+                    snakes[i] = backend.getPlayers()[i].getSnake();
+                }
+
+                for (int i = 0; i < 2; i++) {
+                    for (int j = 0; j < snakes[i].length; j++) {
+                        if (j == 0)
+                            g.drawImage(headImg, snakes[i][j].x*EXPAND_RATE, snakes[i][j].y*EXPAND_RATE, this);
+                        else
+                            g.drawImage(bodyImg, snakes[i][j].x*EXPAND_RATE, snakes[i][j].y*EXPAND_RATE, this);
+                    }
+                }
+
+                Toolkit.getDefaultToolkit().sync();
+            }
         }
 
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (!this.backend.isGameOver()) {
-            this.backend.progress();
-        } else{
-            gameOver();
+        if (this.backend.getPlayers().length == 1) {
+            if (!this.backend.getPlayers()[0].isGameOver()) {
+                this.backend.progress();
+            } else{
+                gameOver();
+            }
+        } else {
+            if (!this.backend.getPlayers()[0].isGameOver() && !this.backend.getPlayers()[1].isGameOver()) {
+                this.backend.progress();
+            } else{
+                gameOver();
+            }
         }
         repaint();
     }
 
     private void gameOver() {
-        timer.stop();
-        int score = this.backend.getScore();
-        JFrame inputDialog = new JFrame();
-        String name = JOptionPane.showInputDialog(inputDialog, "Enter name");
-        if (name != null) {
-            name = name.split(" ")[0];
-            RankingTableRow record = new RankingTableRow(name, score, new Date());
-            try {
-                DataLoader.updateScoreboard(record);
-            } catch (Exception ex) {
-                System.out.println(ex.getMessage());
+        if (this.backend.getPlayers().length == 1) {
+            // Single Play Mode
+            timer.stop();
+            int score = this.backend.getPlayers()[0].getScore();
+            JFrame inputDialog = new JFrame();
+            String name = JOptionPane.showInputDialog(inputDialog, "Enter name");
+            if (name != null) {
+                name = name.split(" ")[0];
+                RankingTableRow record = new RankingTableRow(name, score, new Date());
+                try {
+                    DataLoader.updateScoreboard(record);
+                } catch (Exception ex) {
+                    System.out.println(ex.getMessage());
+                }
             }
+            this.controller.showMainMenu();
+        } else if (this.backend.getPlayers()[1].getType() == PlayerType.PLAYER2){
+            // Dual Play Mode
+            // TODO: display who is winner when dual play mode is over.
+        } else {
+            // Auto Play Mode
+            // TODO: display score when auto play mode is over.
         }
-        this.controller.showMainMenu();
     }
 
     private class TAdapter extends KeyAdapter {
+        // TODO: make KeyListener working on dual play mode and auto play mode
         @Override
         public void keyPressed(KeyEvent e) {
-            DIRECTION d = backend.getDirection();
+            DIRECTION d = backend.getPlayers()[0].getDirection();
             int key = e.getKeyCode();
             if ((key == KeyEvent.VK_LEFT) && !(d==DIRECTION.EAST)) {
-                backend.setDirection(DIRECTION.WEST);
+                backend.getPlayers()[0].setDirection(DIRECTION.WEST);
             }
             if ((key == KeyEvent.VK_RIGHT) && !(d==DIRECTION.WEST)) {
-                backend.setDirection(DIRECTION.EAST);
+                backend.getPlayers()[0].setDirection(DIRECTION.EAST);
             }
             if ((key == KeyEvent.VK_UP) && !(d==DIRECTION.SOUTH)) {
-                backend.setDirection(DIRECTION.NORTH);
+                backend.getPlayers()[0].setDirection(DIRECTION.NORTH);
             }
             if ((key == KeyEvent.VK_DOWN) && !(d==DIRECTION.NORTH)) {
-                backend.setDirection(DIRECTION.SOUTH);
+                backend.getPlayers()[0].setDirection(DIRECTION.SOUTH);
             }
             if (key == KeyEvent.VK_ESCAPE){
                 timer.stop();

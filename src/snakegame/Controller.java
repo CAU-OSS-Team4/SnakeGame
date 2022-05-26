@@ -40,14 +40,25 @@ public class Controller{
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         });
 
+        // SINGLE PLAY
         mainMenu.buttons[0].addActionListener(e -> {
             cardLayout.show(panel, "board");
             board.initGame();
             board.requestFocusInWindow();
         });
 
+        // DUAL PLAY
         mainMenu.buttons[1].addActionListener(e -> {
-            System.out.println(1);
+            // TODO: DUAL PLAY
+        });
+
+        // AUTO PLAY
+        mainMenu.buttons[2].addActionListener(e -> {
+            // TODO: AUTO PLAY
+        });
+
+        // LOAD
+        mainMenu.buttons[3].addActionListener(e -> {
             cardLayout.show(panel, "board");
             try {
                 board.load(DataLoader.loadAndRemove());
@@ -58,13 +69,14 @@ public class Controller{
             }
         });
 
-        mainMenu.buttons[2].addActionListener(e -> {
+        // RANKING
+        mainMenu.buttons[4].addActionListener(e -> {
             cardLayout.show(panel, "rankingView");
             rankingView.init();
         });
 
-        // terminate the game.
-        mainMenu.buttons[3].addActionListener(e -> System.exit(0));
+        // EXIT: terminate the game.
+        mainMenu.buttons[5].addActionListener(e -> System.exit(0));
 
         rankingView.backButton.addActionListener(e -> {
             // MainMenu 화면으로 돌아감.

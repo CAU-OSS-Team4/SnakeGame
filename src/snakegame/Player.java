@@ -43,16 +43,19 @@ public class Player {
 		// You need to change the variable 'direction'.
 		Pair[] snake = getSnake();
 		Pair apple = ctx.apples[0];
-		int[][] visited = new int[ctx.width][ctx.height];
+		int[][] path = new int[ctx.width][ctx.height];
+		boolean[][] visited = new boolean[ctx.width][ctx.height];
 
 		for (int i = 0; i < ctx.width; i++) {
 			for (int j = 0; j < ctx.height; j++) {
-				visited[i][j] = Integer.MAX_VALUE;
+				path[i][j] = Integer.MAX_VALUE;
+				visited[i][j] = false;
 			}
 		}
 
 		for (Pair pair : snake) {
-			visited[pair.x][pair.y] = -1;
+			path[pair.x][pair.y] = -1;
+			visited[pair.x][pair.y] = true;
 		}
 
 		int x;
@@ -60,7 +63,8 @@ public class Player {
 		int distance = 0;
 		Queue<int[]> queue = new LinkedList<int[]>();
 		queue.offer(new int[] { snake[0].x, snake[0].y, distance });
-		visited[snake[0].x][snake[0].y] = distance;
+		path[snake[0].x][snake[0].y] = distance;
+		visited[snake[0].x][snake[0].y] = true;
 
 		while (!queue.isEmpty()) {
 			int[] temp = queue.poll();
@@ -68,22 +72,23 @@ public class Player {
 			y = temp[1];
 			distance = temp[2];
 			System.out.println(distance);
+			System.out.println(queue.size());
 
 			if (x == apple.x && y == apple.y) {
 				for (int value = distance; value >= 0; value--) {
-					if (x + 1 < ctx.width && visited[x + 1][y] == distance - 1) {
+					if (x + 1 < ctx.width && path[x + 1][y] == distance - 1) {
 						direction = DIRECTION.WEST;
 						continue;
 					}
-					if (x - 1 >= 0 && visited[x - 1][y] == distance - 1) {
+					if (x - 1 >= 0 && path[x - 1][y] == distance - 1) {
 						direction = DIRECTION.EAST;
 						continue;
 					}
-					if (y + 1 < ctx.height && visited[x][y + 1] == distance - 1) {
+					if (y + 1 < ctx.height && path[x][y + 1] == distance - 1) {
 						direction = DIRECTION.NORTH;
 						continue;
 					}
-					if (y - 1 >= 0 && visited[x][y - 1] == distance - 1) {
+					if (y - 1 >= 0 && path[x][y - 1] == distance - 1) {
 						direction = DIRECTION.SOUTH;
 						continue;
 					}
@@ -91,21 +96,25 @@ public class Player {
 				break;
 			}
 
-			if (x + 1 < ctx.width && visited[x + 1][y] > distance) {
+			if (x + 1 < ctx.width && !visited[x + 1][y] && path[x + 1][y] > distance) {
 				queue.offer(new int[] { x + 1, y, distance + 1 });
-				visited[x + 1][y] = distance + 1;
+				path[x + 1][y] = distance + 1;
+				visited[x + 1][y] = true;
 			}
-			if (x - 1 >= 0 && visited[x - 1][y] > distance) {
+			if (x - 1 >= 0 && !visited[x - 1][y] && path[x - 1][y] > distance) {
 				queue.offer(new int[] { x - 1, y, distance + 1 });
-				visited[x - 1][y] = distance + 1;
+				path[x - 1][y] = distance + 1;
+				visited[x - 1][y] = true;
 			}
-			if (y + 1 < ctx.height && visited[x][y + 1] > distance) {
+			if (y + 1 < ctx.height && !visited[x][y + 1] && path[x][y + 1] > distance) {
 				queue.offer(new int[] { x, y + 1, distance + 1 });
-				visited[x][y + 1] = distance + 1;
+				path[x][y + 1] = distance + 1;
+				visited[x][y + 1] = true;
 			}
-			if (y - 1 >= 0 && visited[x][y - 1] > distance) {
+			if (y - 1 >= 0 && !visited[x][y - 1] && path[x][y - 1] > distance) {
 				queue.offer(new int[] { x, y - 1, distance + 1 });
-				visited[x][y - 1] = distance + 1;
+				path[x][y - 1] = distance + 1;
+				visited[x][y - 1] = true;
 			}
 		}
 	}

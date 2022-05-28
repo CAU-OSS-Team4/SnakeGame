@@ -67,7 +67,7 @@ the final score or the winner) is displayed
 
 ### Guildeline to install and run the game
 - Dowload the Github desktop
-- Open our Snake game in Github desktop, then the project including file soure code, file images and the others will save in your local disk that you choose
+- Open our repository named Snake game in Github desktop, then the project including file soure code, file images and the others will save in your local disk that you choose
 - Run the project with any IDE or platform which support to Java language
 
 

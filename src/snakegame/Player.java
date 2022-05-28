@@ -39,8 +39,6 @@ public class Player {
 	public PlayerType getType() { return ptype; }
 	
 	public void decide(GameContext ctx) {
-		// TODO: Determine direction in AUTO PLAY.
-		// You need to change the variable 'direction'.
 		Pair[] snake = getSnake();
 		Pair apple = ctx.apples[0];
 		int[][] path = new int[ctx.width][ctx.height];
@@ -71,8 +69,6 @@ public class Player {
 			x = temp[0];
 			y = temp[1];
 			distance = temp[2];
-			System.out.println(distance);
-			System.out.println(queue.size());
 
 			if (x == apple.x && y == apple.y) {
 				for (int value = distance; value >= 0; value--) {

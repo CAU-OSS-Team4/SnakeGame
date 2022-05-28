@@ -59,8 +59,10 @@ public class GameBoard extends JPanel implements ActionListener {
     }
 
     public void initDualPlay() {
-        // TODO: implement DUAL PLAY
         ingameMenu.disableSave();
+        this.backend = GameFactory.createDualMode();
+        timer = new Timer(DELAY, this);
+        timer.start();
     }
 
     public void initAutoPlay() {
@@ -166,7 +168,9 @@ public class GameBoard extends JPanel implements ActionListener {
             }
         } else {
             // DUAL PLAY Mode
-            if (this.backend.getPlayers()[0].isGameOver()) {
+            if (this.backend.getPlayers()[0].isGameOver() && this.backend.getPlayers()[1].isGameOver()) {
+                JOptionPane.showMessageDialog(new JFrame(), "Draw");
+            } else if (this.backend.getPlayers()[0].isGameOver()) {
                 JOptionPane.showMessageDialog(new JFrame(), "Winner is PLAYER 2");
             } else {
                 JOptionPane.showMessageDialog(new JFrame(), "Winner is PLAYER 1");
@@ -203,7 +207,7 @@ public class GameBoard extends JPanel implements ActionListener {
                     }
                 } else {
                     // AUTO PLAY
-                    if ((key == KeyEvent.VK_ESCAPE)) {
+                    if (key == KeyEvent.VK_ESCAPE) {
                         timer.stop();
                         ingameMenu.setVisible(true);
                     }
@@ -211,6 +215,42 @@ public class GameBoard extends JPanel implements ActionListener {
             } else {
                 // DUAL PLAY
                 // TODO: implement KeyListener for DUAL PLAY
+                DIRECTION d1 = backend.getPlayers()[0].getDirection();
+                DIRECTION d2 = backend.getPlayers()[1].getDirection();
+                int key = e.getKeyCode();
+
+                // PLAYER 1
+                if ((key == KeyEvent.VK_LEFT) && !(d1 == DIRECTION.EAST)) {
+                    backend.getPlayers()[0].setDirection(DIRECTION.WEST);
+                }
+                if ((key == KeyEvent.VK_RIGHT) && !(d1 == DIRECTION.WEST)) {
+                    backend.getPlayers()[0].setDirection(DIRECTION.EAST);
+                }
+                if ((key == KeyEvent.VK_UP) && !(d1 == DIRECTION.SOUTH)) {
+                    backend.getPlayers()[0].setDirection(DIRECTION.NORTH);
+                }
+                if ((key == KeyEvent.VK_DOWN) && !(d1 == DIRECTION.NORTH)) {
+                    backend.getPlayers()[0].setDirection(DIRECTION.SOUTH);
+                }
+
+                // PLAYER 2
+                if ((key == KeyEvent.VK_A) && !(d2 == DIRECTION.EAST)) {
+                    backend.getPlayers()[1].setDirection(DIRECTION.WEST);
+                }
+                if ((key == KeyEvent.VK_D) && !(d2 == DIRECTION.WEST)) {
+                    backend.getPlayers()[1].setDirection(DIRECTION.EAST);
+                }
+                if ((key == KeyEvent.VK_W) && !(d2 == DIRECTION.SOUTH)) {
+                    backend.getPlayers()[1].setDirection(DIRECTION.NORTH);
+                }
+                if ((key == KeyEvent.VK_S) && !(d2 == DIRECTION.NORTH)) {
+                    backend.getPlayers()[1].setDirection(DIRECTION.SOUTH);
+                }
+
+                if (key == KeyEvent.VK_ESCAPE) {
+                    timer.stop();
+                    ingameMenu.setVisible(true);
+                }
             }
         }
     }

@@ -51,7 +51,9 @@ public class Controller{
 
         // DUAL PLAY
         mainMenu.buttons[1].addActionListener(e -> {
-            // TODO: DUAL PLAY
+            cardLayout.show(panel, "board");
+            board.initDualPlay();
+            board.requestFocusInWindow();
             gameMode = "DUAL PLAY";
         });
 

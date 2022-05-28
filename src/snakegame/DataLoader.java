@@ -16,37 +16,56 @@ public final class DataLoader {
 		
 		BufferedReader br = new BufferedReader(new FileReader(file));
 		
-		Pair apple; int score, width, height; DIRECTION direction;
+		int width, height;
+		Player[] players; Pair[] apples;
 		
 		String line = br.readLine(); if (line.endsWith("\n")) line = line.substring(0, line.length()-1);
 		String[] data = line.split(" ");
 		width = Integer.parseInt(data[0]);
 		height = Integer.parseInt(data[1]);
 		
-		Deque snake = new Deque(width * height + 1);
-
 		line = br.readLine(); if (line.endsWith("\n")) line = line.substring(0, line.length()-1);
-		data = line.split(" ");
-		int N = Integer.parseInt(data[0]);
-		for (int n = 1; n <= N; n++) {
-			int x = Integer.parseInt(data[n].split(":")[0]);
-			int y = Integer.parseInt(data[n].split(":")[1]);
-			snake.push_back(new Pair(x, y));
+		int num_player = Integer.parseInt(line);
+		players = new Player[num_player];
+		for (int i = 0; i < num_player; i++) {
+			line = br.readLine(); if (line.endsWith("\n")) line = line.substring(0, line.length()-1);
+			data = line.split(" ");
+			
+			PlayerType ptype;
+			if (data[0].equals("PLAYER1")) ptype = PlayerType.PLAYER1; 
+			else if (data[0].equals("PLAYER2")) ptype = PlayerType.PLAYER2;
+			else ptype = PlayerType.AUTO;
+			
+			int score = Integer.parseInt(data[1]);
+			boolean over = data[2].equals("T");
+			
+			DIRECTION direction;
+			if (data[3].equals("NORTH")) direction = DIRECTION.NORTH;
+			else if (data[3].equals("SOUTH")) direction = DIRECTION.SOUTH;
+			else if (data[3].equals("EAST")) direction = DIRECTION.EAST;
+			else direction = DIRECTION.WEST;
+			System.out.println(data[2]);
+
+			Deque snake = new Deque(width * height + 1);
+			int len = Integer.parseInt(data[4]);
+			for (int n = 0; n < len; n++) {
+				int x = Integer.parseInt(data[5+n].split(":")[0]);
+				int y = Integer.parseInt(data[5+n].split(":")[1]);
+				snake.push_back(new Pair(x, y));
+			}
+			players[i] = new Player(snake, direction, score, over, ptype);
 		}
 		
 		line = br.readLine(); if (line.endsWith("\n")) line = line.substring(0, line.length()-1);
-		data = line.split(" ");
-		apple = new Pair(Integer.parseInt(data[0].split(":")[0]), Integer.parseInt(data[0].split(":")[1]));
-		score = Integer.parseInt(data[1]);
-		
-		if (data[2].equals("NORTH")) direction = DIRECTION.NORTH;
-		else if (data[2].equals("SOUTH")) direction = DIRECTION.SOUTH;
-		else if (data[2].equals("EAST")) direction = DIRECTION.EAST;
-		else direction = DIRECTION.WEST;
-		System.out.println(data[2]);
-		
+		int num_apple = Integer.parseInt(line);
+		apples = new Pair[num_apple];
+		for (int i = 0; i < num_player; i++) {
+			line = br.readLine(); if (line.endsWith("\n")) line = line.substring(0, line.length()-1);
+			apples[i] = new Pair(Integer.parseInt(line.split(":")[0]), Integer.parseInt(line.split(":")[1]));
+		}
+			
 		br.close();
-		return new GameContext(width, height, snake, apple, score, direction);
+		return new GameContext(width, height, players, apples);
 	}
 	
 	static GameContext loadAndRemove() throws Exception {
@@ -67,19 +86,32 @@ public final class DataLoader {
 		sb.append(ctx.width + " ");
 		sb.append(ctx.height + "\n");
 		
-		Pair[] snake = ctx.snake.list();
+		sb.append(ctx.players.length + "\n");
+		for (int i = 0; i < ctx.players.length; i++) {
+			if (ctx.players[i].getType() == PlayerType.PLAYER1) sb.append("PLAYER1");
+			else if (ctx.players[i].getType() == PlayerType.PLAYER2) sb.append("PLAYER2");
+			else sb.append("AUTO");
+			sb.append(" ");
+			
+			sb.append(ctx.players[i].getScore() + " ");
+			sb.append((ctx.players[i].isGameOver() ? "T" : "F") + " ");
+			
+			if (ctx.players[i].getDirection() == DIRECTION.NORTH) sb.append("NORTH");
+			else if (ctx.players[i].getDirection() == DIRECTION.SOUTH) sb.append("SOUTH");
+			else if (ctx.players[i].getDirection() == DIRECTION.EAST) sb.append("EAST");
+			else sb.append("WEST");
+			sb.append(" ");
+			
+			Pair[] snake = ctx.players[i].getSnake();
+			sb.append(snake.length + " ");
+			for (int n = 0; n < snake.length; n++) sb.append(snake[n].x + ":" + snake[n].y + " ");
+			sb.append("\n");
+		}
 		
-		sb.append(snake.length + " ");
-		for (int n = 0; n < snake.length; n++) sb.append(snake[n].x + ":" + snake[n].y + " ");
-		sb.append("\n");
-		
-		sb.append(ctx.apple.x + ":" + ctx.apple.y + " ");
-		sb.append(ctx.score + " ");
-		
-		if (ctx.direction == DIRECTION.NORTH) sb.append("NORTH");
-		else if (ctx.direction == DIRECTION.SOUTH) sb.append("SOUTH");
-		else if (ctx.direction == DIRECTION.EAST) sb.append("EAST");
-		else sb.append("WEST");
+		sb.append(ctx.apples.length + "\n");
+		for (int i = 0; i < ctx.apples.length; i++) {
+			sb.append(ctx.apples[i].x + ":" + ctx.apples[i].y + "\n");
+		}
 		
 		bw.write(sb.toString());
 		bw.close();

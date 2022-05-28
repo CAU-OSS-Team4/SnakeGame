@@ -30,12 +30,20 @@ public class IngameMenu extends JPanel {
             buttons[i].setFont(font);
             add(buttons[i]);
         }
-        buttons[0].setText("RESUME");
-        buttons[1].setText("RESTART");
-        buttons[2].setText("SAVE");
-        buttons[3].setText("EXIT");
+        buttons[0].setText("EXIT");
+        buttons[1].setText("RESUME");
+        buttons[2].setText("RESTART");
+        buttons[3].setText("SAVE");
 
         setFocusable(true);
         setPreferredSize(new Dimension(INGAMEMENU_WIDTH, INGAMEMENU_HEIGHT));
+    }
+
+    public void disableSave() {
+        buttons[3].setVisible(false);
+    }
+
+    public void enableSave() {
+        buttons[3].setVisible(true);
     }
 }

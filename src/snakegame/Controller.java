@@ -7,9 +7,10 @@ public class Controller{
     private final MainMenu mainMenu;
     private final RankingView rankingView;
     private final GameBoard board;
-    private JFrame frame;
+    JFrame frame;
     private JPanel panel;
     private CardLayout cardLayout;
+    private String gameMode;
 
     public Controller(MainMenu mainMenu, RankingView rankingView, GameBoard board) {
         this.mainMenu = mainMenu;
@@ -38,56 +39,94 @@ public class Controller{
             frame.setTitle("Snake Game");  // 게임 화면의 Title 이름
             frame.setLocationRelativeTo(null);
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setSize(new Dimension(875, 905));
         });
 
+        // SINGLE PLAY
         mainMenu.buttons[0].addActionListener(e -> {
+            frame.setSize(new Dimension(875, 905));
             cardLayout.show(panel, "board");
-            board.initGame();
+            board.initSinglePlay();
             board.requestFocusInWindow();
+            gameMode = "SINGLE PLAY";
         });
 
+        // DUAL PLAY
         mainMenu.buttons[1].addActionListener(e -> {
-            System.out.println(1);
+            frame.setSize(new Dimension(1755, 905));
+            cardLayout.show(panel, "board");
+            board.initDualPlay();
+            board.requestFocusInWindow();
+            gameMode = "DUAL PLAY";
+        });
+
+        // AUTO PLAY
+        mainMenu.buttons[2].addActionListener(e -> {
+            frame.setSize(new Dimension(875, 905));
+            cardLayout.show(panel, "board");
+            board.initAutoPlay();
+            board.requestFocusInWindow();
+            gameMode = "AUTO PLAY";
+        });
+
+        // LOAD
+        mainMenu.buttons[3].addActionListener(e -> {
             cardLayout.show(panel, "board");
             try {
                 board.load(DataLoader.loadAndRemove());
             } catch (Exception _e){
-                board.initGame();
+                board.initSinglePlay();
             } finally {
                 board.requestFocusInWindow();
+                gameMode = "SINGLE PLAY";
             }
         });
 
-        mainMenu.buttons[2].addActionListener(e -> {
+        // RANKING
+        mainMenu.buttons[4].addActionListener(e -> {
             cardLayout.show(panel, "rankingView");
             rankingView.init();
         });
 
-        // terminate the game.
-        mainMenu.buttons[3].addActionListener(e -> System.exit(0));
+        // EXIT: terminate the game.
+        mainMenu.buttons[5].addActionListener(e -> System.exit(0));
 
         rankingView.backButton.addActionListener(e -> {
             // MainMenu 화면으로 돌아감.
             cardLayout.show(panel, "mainMenu");
         });
 
+        // EXIT
         board.ingameMenu.buttons[0].addActionListener(e -> {
-            board.timer.start();
-            board.ingameMenu.setVisible(false);
-        });
-
-        board.ingameMenu.buttons[1].addActionListener(e -> {
-            board.ingameMenu.setVisible(false);
-            board.initGame();
-        });
-
-        board.ingameMenu.buttons[2].addActionListener(e -> {
-            board.save();
             cardLayout.show(panel, "mainMenu");
             board.ingameMenu.setVisible(false);
         });
 
+        // RESUME
+        board.ingameMenu.buttons[1].addActionListener(e -> {
+            board.timer.start();
+            board.ingameMenu.setVisible(false);
+        });
+
+        // RESTART
+        board.ingameMenu.buttons[2].addActionListener(e -> {
+            board.ingameMenu.setVisible(false);
+            switch (gameMode) {
+                case "SINGLE PLAY":
+                    board.initSinglePlay();
+                    break;
+                case "DUAL PLAY":
+                    board.initDualPlay();
+                    break;
+                case "AUTO PLAY":
+                    board.initAutoPlay();
+                    break;
+            }
+        });
+
+        // SAVE
         board.ingameMenu.buttons[3].addActionListener(e -> {
+            board.save();
             cardLayout.show(panel, "mainMenu");
             board.ingameMenu.setVisible(false);
         });

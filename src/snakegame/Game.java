@@ -1,120 +1,133 @@
 package snakegame;
 
-enum DIRECTION { NORTH, SOUTH, EAST, WEST }
-
 public class Game {
 	private int WIDTH = 40;
 	private int HEIGHT = 40;
 	
-	private int score;
-	private Pair apple;
-	private DIRECTION d;
-	private Deque snake;
+	private Pair[] apples;
+	private Player[] players;
 	
-	private boolean is_game_over;
-	
-	public void init() {
-		score = 0;
-		is_game_over = false;
-		
-		snake = new Deque(WIDTH * HEIGHT + 1);
-		snake.push_front(new Pair(WIDTH / 2, HEIGHT / 2));
-		d = DIRECTION.NORTH;
-		
-		apple = new Pair(-1, -1);
-		generateApple();
-	}
-	
-	public Game() {
-		init();
-	}
-	
-	public Game(int w, int h) {
-		WIDTH = w;
-		HEIGHT = h;
-		init();
-	}
-	
-	public Game(GameContext ctx) {
-		snake = ctx.snake;
-		apple = ctx.apple;
-		score = ctx.score;
+	public Game(GameContext ctx, boolean init) {
+		players = ctx.players;
+		apples = ctx.apples;
 		WIDTH = ctx.width;
 		HEIGHT = ctx.height;
-		d = ctx.direction;
+		if (init) {
+			for (int i = 0; i < apples.length; i++) generateApple(i);
+		}
 	}
 	
-	private void generateApple() {
-		Pair[] arr = snake.list();
+	private void generateApple(int n) {
 		while (true) {
 			int x = (int)(Math.random() * WIDTH);
 			int y = (int)(Math.random() * HEIGHT);
 			boolean valid = true;
-			for (int i = 0; i < arr.length; i++) {
-				if (arr[i].x == x && arr[i].y == y) {
-					valid = false;
-					break;
+			for (int i = 0; i < players.length; i++) {
+				Pair[] arr = players[i].getSnake();
+				for (int j = 0; j < arr.length; j++) {
+					if (arr[j].x == x && arr[j].y == y) {
+						valid = false;
+						break;
+					}
 				}
 			}
+			for (int i = 0; i < apples.length; i++) {
+				if (i == n) continue;
+				if (apples[i].x == x && apples[i].y == y) valid = false;
+			}
 			if (valid) {
-				apple.x = x;
-				apple.y = y;
+				apples[n].x = x;
+				apples[n].y = y;
 				break;
 			}
 		}
 	}
 	
 	public void progress() {
-		if (is_game_over) return;
+		for (int i = 0; i < players.length; i++) {
+			if (players[i].isGameOver()) return;
+		}
+
+		boolean eaten[] = new boolean[apples.length];
+		for (int i = 0; i < players.length; i++) {
+			if (players[i].isGameOver()) continue;
+			Pair mv = players[i].getSnake()[0];
+			
+			if (players[i].getType() == PlayerType.AUTO) players[i].decide(getContext());
+			if (players[i].getDirection() == DIRECTION.NORTH) mv.y--;
+			else if (players[i].getDirection() == DIRECTION.SOUTH) mv.y++;
+			else if (players[i].getDirection() == DIRECTION.EAST) mv.x++;
+			else if (players[i].getDirection() == DIRECTION.WEST) mv.x--;
+			
+			boolean eat = false;
+			for (int j = 0; j < apples.length; j++) {
+				if (mv.x == apples[j].x && mv.y == apples[j].y) {
+					eat = true;
+					eaten[j] = true;
+				}
+			}
+			if (eat) {
+				players[i].snake_push_front(mv);
+				players[i].scoreIncrease();
+			}
+			else {
+				players[i].snake_push_front(mv);
+				players[i].snake_pop_back();
+			}
+		}
 		
-		Pair mv = snake.front();
-		if (d == DIRECTION.NORTH) mv.y--;
-		else if (d == DIRECTION.SOUTH) mv.y++;
-		else if (d == DIRECTION.EAST) mv.x++;
-		else if (d == DIRECTION.WEST) mv.x--;
+		boolean game_over[] = new boolean[players.length];
+		for (int i = 0; i < players.length; i++) {
+			if (players[i].isGameOver()) continue;
+			Pair mv = players[i].getSnake()[0];
+			for (int j = 0; j < players.length; j++) {
+				if (players[j].isGameOver()) continue;
+				Pair[] arr = players[j].getSnake();
+				for (int k = 0; k < arr.length; k++) {
+					if (i == j && k == 0) continue;
+					if (arr[k].x == mv.x && arr[k].y == mv.y) game_over[i] = true;
+				}
+			}
+			if (mv.x < 0 || WIDTH <= mv.x || mv.y < 0 || HEIGHT <= mv.y) game_over[i] = true;
+		}
 		
-		if (mv.x == apple.x && mv.y == apple.y) {
-			snake.push_front(mv);
-			score++;
-			if (score == WIDTH * HEIGHT - 1) is_game_over = true;
-			else generateApple();
+		int sum = 0;
+		for (int i = 0; i < players.length; i++) sum += players[i].getScore();
+		
+		if (sum + players.length + apples.length > WIDTH * HEIGHT) {
+			for (int i = 0; i < players.length; i++) game_over[i] = true;
 		}
 		else {
-			snake.push_front(mv);
-			snake.pop_back();
+			for (int i = 0; i < apples.length; i++) {
+				if (eaten[i]) generateApple(i);
+			}
 		}
-		
-		Pair[] arr = snake.list();
-		for (int i = 1; i < arr.length; i++) {
-			if (arr[i].x == mv.x && arr[i].y == mv.y) is_game_over = true;
+
+		for (int i = 0; i < players.length; i++) {
+			if (game_over[i]) players[i].gameOver();
 		}
-		if (mv.x < 0 || WIDTH <= mv.x || mv.y < 0 || HEIGHT <= mv.y) is_game_over = true;
 	}
 	
-	public void setDirection(DIRECTION x) { d = x; }
-	
-	public DIRECTION getDirection() { return d; }
-	
-	public Pair getApple() { return new Pair(apple.x, apple.y); }
-	
-	public Pair[] getSnake() { return snake.list(); }
-	
-	public int getScore() { return score; }
-	
-	public boolean isGameOver() { return is_game_over; }
+	public Pair[] getApples() { 
+		Pair[] ret = new Pair[apples.length];
+		for (int i = 0; i < apples.length; i++) ret[i] = new Pair(apples[i].x, apples[i].y);
+		return ret;
+	}
 	
 	public int getWidth() { return WIDTH; }
 	
 	public int getHeight() { return HEIGHT; }
 	
-	public GameContext getContext() { return new GameContext(WIDTH, HEIGHT, snake, apple, score, d); }
+	public GameContext getContext() { return new GameContext(WIDTH, HEIGHT, players, apples); }
 
 	public void setContext(GameContext gameContext) {
 		this.WIDTH = gameContext.width;
 		this.HEIGHT = gameContext.height;
-		this.apple = gameContext.apple;
-		this.snake = gameContext.snake;
-		this.score = gameContext.score;
-		setDirection(gameContext.direction);
+		this.apples = gameContext.apples;
+		this.players = gameContext.players;
+	}
+
+	public Player[] getPlayers() {
+		return players;
 	}
 }

@@ -16,33 +16,31 @@ public class MainMenu extends JPanel {
         label = new JLabel();
         icon = new ImageIcon("src/resources/mainscreen.png");
         label.setIcon(icon);
-        buttons = new JButton[4];
-        for (int i = 0; i < 4; i++) {
+        buttons = new JButton[6];
+        Font font = new Font("Default", Font.ITALIC, 28);
+        for (int i = 0; i < 6; i++) {
             buttons[i] = new JButton();
             buttons[i].setContentAreaFilled(false);
             buttons[i].setForeground(Color.WHITE);
+            buttons[i].setFont(font);
+            add(buttons[i]);
         }
-        buttons[0].setText("PLAY");
-        buttons[1].setText("LOAD");
-        buttons[2].setText("RANKING");
-        buttons[3].setText("EXIT");
+        buttons[0].setText("SINGLE PLAY");
+        buttons[1].setText("DUAL PLAY");
+        buttons[2].setText("AUTO PLAY");
+        buttons[3].setText("LOAD");
+        buttons[4].setText("RANKING");
+        buttons[5].setText("EXIT");
 
         setLayout(null);
         label.setBounds(0, 0, 900, 900);
-        buttons[0].setBounds(650, 575, 200, 50);
-        buttons[1].setBounds(650, 650, 200, 50);
-        buttons[2].setBounds(650, 725, 200, 50);
-        buttons[3].setBounds(650, 800, 200, 50);
+        buttons[0].setBounds(600, 520, 250, 40);
+        buttons[1].setBounds(600, 580, 250, 40);
+        buttons[2].setBounds(600, 640, 250, 40);
+        buttons[3].setBounds(600, 700, 250, 40);
+        buttons[4].setBounds(600, 760, 250, 40);
+        buttons[5].setBounds(600, 820, 250, 40);
 
-        Font font = new Font("Default", Font.ITALIC, 28);
-        buttons[0].setFont(font);
-        buttons[1].setFont(font);
-        buttons[2].setFont(font);
-        buttons[3].setFont(font);
-
-        for (int i = 0; i < 4; i++) {
-            add(buttons[i]);
-        }
         add(label);
 
         setBackground(Color.WHITE);  // Main menu 의 background 색을 나타냄.

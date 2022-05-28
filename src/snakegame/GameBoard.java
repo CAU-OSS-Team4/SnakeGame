@@ -31,7 +31,7 @@ public class GameBoard extends JPanel implements ActionListener {
         addKeyListener(new TAdapter());
         setBackground(Color.black);
         setFocusable(true);
-        setPreferredSize(new Dimension(B_WIDTH, B_HEIGHT));
+        setPreferredSize(new Dimension(B_WIDTH * 2, B_HEIGHT));
         loadImages();
 
         ingameMenu = new IngameMenu();
@@ -176,11 +176,11 @@ public class GameBoard extends JPanel implements ActionListener {
                 JOptionPane.showMessageDialog(new JFrame(), "Winner is PLAYER 1");
             }
         }
+        this.controller.frame.setSize(new Dimension(875, 905));
         this.controller.showMainMenu();
     }
 
     private class TAdapter extends KeyAdapter {
-        // TODO: make KeyListener working on dual play mode and auto play mode
         @Override
         public void keyPressed(KeyEvent e) {
             if (backend.getPlayers().length == 1) {
@@ -214,7 +214,6 @@ public class GameBoard extends JPanel implements ActionListener {
                 }
             } else {
                 // DUAL PLAY
-                // TODO: implement KeyListener for DUAL PLAY
                 DIRECTION d1 = backend.getPlayers()[0].getDirection();
                 DIRECTION d2 = backend.getPlayers()[1].getDirection();
                 int key = e.getKeyCode();

@@ -17,8 +17,8 @@ public class GameFactory {
 		return new Game(ctx, true);
 	}
 	public static Game createDualMode() {
-		int width = 40;
-		int height = 80;
+		int width = 80;
+		int height = 40;
 		
 		Player[] players = new Player[2];
 		Deque snake = new Deque(width * height + 1);

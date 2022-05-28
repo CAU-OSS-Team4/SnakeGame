@@ -7,7 +7,7 @@ public class Controller{
     private final MainMenu mainMenu;
     private final RankingView rankingView;
     private final GameBoard board;
-    private JFrame frame;
+    JFrame frame;
     private JPanel panel;
     private CardLayout cardLayout;
     private String gameMode;
@@ -39,10 +39,12 @@ public class Controller{
             frame.setTitle("Snake Game");  // 게임 화면의 Title 이름
             frame.setLocationRelativeTo(null);
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setSize(new Dimension(875, 905));
         });
 
         // SINGLE PLAY
         mainMenu.buttons[0].addActionListener(e -> {
+            frame.setSize(new Dimension(875, 905));
             cardLayout.show(panel, "board");
             board.initSinglePlay();
             board.requestFocusInWindow();
@@ -51,6 +53,7 @@ public class Controller{
 
         // DUAL PLAY
         mainMenu.buttons[1].addActionListener(e -> {
+            frame.setSize(new Dimension(1755, 905));
             cardLayout.show(panel, "board");
             board.initDualPlay();
             board.requestFocusInWindow();
@@ -59,6 +62,7 @@ public class Controller{
 
         // AUTO PLAY
         mainMenu.buttons[2].addActionListener(e -> {
+            frame.setSize(new Dimension(875, 905));
             cardLayout.show(panel, "board");
             board.initAutoPlay();
             board.requestFocusInWindow();

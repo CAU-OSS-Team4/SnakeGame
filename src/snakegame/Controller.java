@@ -98,6 +98,7 @@ public class Controller{
 
         // EXIT
         board.ingameMenu.buttons[0].addActionListener(e -> {
+            frame.setSize(new Dimension(875, 905));
             cardLayout.show(panel, "mainMenu");
             board.ingameMenu.setVisible(false);
         });

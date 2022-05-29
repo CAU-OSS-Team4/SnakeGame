@@ -122,7 +122,7 @@ public class GameBoard extends JPanel implements ActionListener {
     }
 
     private void gameOver() {
-        timer.stop();
+    	timer.stop();
         if (this.backend.getPlayers().length == 1) {
             if (this.backend.getPlayers()[0].getType() == PlayerType.PLAYER1) {
                 // SINGLE PLAY Mode
@@ -139,9 +139,13 @@ public class GameBoard extends JPanel implements ActionListener {
                         System.out.println(ex.getMessage());
                     }
                 }
+            } else {
+                // AUTO PLAY Mode
+                int score = this.backend.getPlayers()[0].getScore();
+                JOptionPane.showMessageDialog(new JFrame(), "Score: " + score);
             }
         } else {
-            // DUAL PLAY Mode & AUTO PLAY Mode
+            // DUAL PLAY Mode
             if (this.backend.getPlayers()[0].isGameOver() && this.backend.getPlayers()[1].isGameOver()) {
                 JOptionPane.showMessageDialog(new JFrame(), "Draw");
             } else if (this.backend.getPlayers()[0].isGameOver()) {

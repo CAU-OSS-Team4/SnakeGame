@@ -80,52 +80,30 @@ public class GameBoard extends JPanel implements ActionListener {
     }
     private void doDrawing(Graphics g){
         // SINGLE PLAY & AUTO PLAY
-        if (this.backend.getPlayers().length == 1) {
-            if(!this.backend.getPlayers()[0].isGameOver()) {
-                Pair apple = backend.getApples()[0];
-
-                g.drawImage(appleImg, apple.x*EXPAND_RATE, apple.y*EXPAND_RATE, this);
-
-                Pair[] snake = backend.getPlayers()[0].getSnake();
-                for (int i=0;i<snake.length;i++) {
-                    if (i == 0)
-                        g.drawImage(headImg, snake[i].x*EXPAND_RATE, snake[i].y*EXPAND_RATE, this);
-                    else
-                        g.drawImage(bodyImg, snake[i].x*EXPAND_RATE, snake[i].y*EXPAND_RATE, this);
-                }
-                Toolkit.getDefaultToolkit().sync();
-            }
-        } else {
-            // DUAL PLAY
-            if(!this.backend.getPlayers()[0].isGameOver() && !this.backend.getPlayers()[1].isGameOver()) {
-                Pair[] apples = backend.getApples();
-
-                g.drawImage(appleImg, apples[0].x*EXPAND_RATE, apples[0].y*EXPAND_RATE, this);
-                g.drawImage(appleImg, apples[1].x*EXPAND_RATE, apples[1].y*EXPAND_RATE, this);
-
-                Pair[][] snakes = new Pair[2][];
-                for (int i = 0; i < 2; i++) {
-                    snakes[i] = backend.getPlayers()[i].getSnake();
-                }
-
-                for (int i = 0; i < 2; i++) {
-                    for (int j = 0; j < snakes[i].length; j++) {
-                        if (j == 0)
-                            g.drawImage(headImg, snakes[i][j].x*EXPAND_RATE, snakes[i][j].y*EXPAND_RATE, this);
-                        else
-                            g.drawImage(bodyImg, snakes[i][j].x*EXPAND_RATE, snakes[i][j].y*EXPAND_RATE, this);
-                    }
-                }
-
-                Toolkit.getDefaultToolkit().sync();
-            }
-        }
-
+    	Player[] players = backend.getPlayers();
+    	for (int i = 0; i < players.length; i++) {
+    		if (players[i].isGameOver()) return;
+    	}
+    	
+    	Pair[] apples = backend.getApples();
+    	for (int i = 0; i < apples.length; i++)
+    		g.drawImage(appleImg, apples[i].x*EXPAND_RATE, apples[i].y*EXPAND_RATE, this);
+    	
+    	for (int i = 0; i < players.length; i++) {
+    		Pair[] snake = players[i].getSnake();
+    		for (int j = 0; j < snake.length; j++) {
+                if (j == 0)
+                    g.drawImage(headImg, snake[j].x*EXPAND_RATE, snake[j].y*EXPAND_RATE, this);
+                else
+                    g.drawImage(bodyImg, snake[j].x*EXPAND_RATE, snake[j].y*EXPAND_RATE, this);
+    		}
+    	}
+        Toolkit.getDefaultToolkit().sync();
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        // SINGLE PLAY & AUTO PLAY
+        // SINGLE PLAY
         if (this.backend.getPlayers().length == 1) {
             if (!this.backend.getPlayers()[0].isGameOver()) {
                 this.backend.progress();
@@ -133,7 +111,7 @@ public class GameBoard extends JPanel implements ActionListener {
                 gameOver();
             }
         } else {
-            // DUAL PLAY
+            // DUAL PLAY & AUTO PLAY
             if (!this.backend.getPlayers()[0].isGameOver() && !this.backend.getPlayers()[1].isGameOver()) {
                 this.backend.progress();
             } else{
@@ -161,13 +139,9 @@ public class GameBoard extends JPanel implements ActionListener {
                         System.out.println(ex.getMessage());
                     }
                 }
-            } else {
-                // AUTO PLAY Mode
-                int score = this.backend.getPlayers()[0].getScore();
-                JOptionPane.showMessageDialog(new JFrame(), "Score: " + score);
             }
         } else {
-            // DUAL PLAY Mode
+            // DUAL PLAY Mode & AUTO PLAY Mode
             if (this.backend.getPlayers()[0].isGameOver() && this.backend.getPlayers()[1].isGameOver()) {
                 JOptionPane.showMessageDialog(new JFrame(), "Draw");
             } else if (this.backend.getPlayers()[0].isGameOver()) {
@@ -183,74 +157,63 @@ public class GameBoard extends JPanel implements ActionListener {
     private class TAdapter extends KeyAdapter {
         @Override
         public void keyPressed(KeyEvent e) {
-            if (backend.getPlayers().length == 1) {
-                DIRECTION d = backend.getPlayers()[0].getDirection();
-                int key = e.getKeyCode();
-
-                if (backend.getPlayers()[0].getType() == PlayerType.PLAYER1) {
-                    // SINGLE PLAY
-                    if ((key == KeyEvent.VK_LEFT) && !(d==DIRECTION.EAST)) {
-                        backend.getPlayers()[0].setDirection(DIRECTION.WEST);
-                    }
-                    if ((key == KeyEvent.VK_RIGHT) && !(d==DIRECTION.WEST)) {
-                        backend.getPlayers()[0].setDirection(DIRECTION.EAST);
-                    }
-                    if ((key == KeyEvent.VK_UP) && !(d==DIRECTION.SOUTH)) {
-                        backend.getPlayers()[0].setDirection(DIRECTION.NORTH);
-                    }
-                    if ((key == KeyEvent.VK_DOWN) && !(d==DIRECTION.NORTH)) {
-                        backend.getPlayers()[0].setDirection(DIRECTION.SOUTH);
-                    }
-                    if (key == KeyEvent.VK_ESCAPE){
-                        timer.stop();
-                        ingameMenu.setVisible(true);
-                    }
-                } else {
-                    // AUTO PLAY
-                    if (key == KeyEvent.VK_ESCAPE) {
-                        timer.stop();
-                        ingameMenu.setVisible(true);
-                    }
-                }
-            } else {
-                // DUAL PLAY
-                DIRECTION d1 = backend.getPlayers()[0].getDirection();
-                DIRECTION d2 = backend.getPlayers()[1].getDirection();
-                int key = e.getKeyCode();
-
-                // PLAYER 1
-                if ((key == KeyEvent.VK_LEFT) && !(d1 == DIRECTION.EAST)) {
-                    backend.getPlayers()[0].setDirection(DIRECTION.WEST);
-                }
-                if ((key == KeyEvent.VK_RIGHT) && !(d1 == DIRECTION.WEST)) {
-                    backend.getPlayers()[0].setDirection(DIRECTION.EAST);
-                }
-                if ((key == KeyEvent.VK_UP) && !(d1 == DIRECTION.SOUTH)) {
-                    backend.getPlayers()[0].setDirection(DIRECTION.NORTH);
-                }
-                if ((key == KeyEvent.VK_DOWN) && !(d1 == DIRECTION.NORTH)) {
-                    backend.getPlayers()[0].setDirection(DIRECTION.SOUTH);
-                }
-
-                // PLAYER 2
-                if ((key == KeyEvent.VK_A) && !(d2 == DIRECTION.EAST)) {
-                    backend.getPlayers()[1].setDirection(DIRECTION.WEST);
-                }
-                if ((key == KeyEvent.VK_D) && !(d2 == DIRECTION.WEST)) {
-                    backend.getPlayers()[1].setDirection(DIRECTION.EAST);
-                }
-                if ((key == KeyEvent.VK_W) && !(d2 == DIRECTION.SOUTH)) {
-                    backend.getPlayers()[1].setDirection(DIRECTION.NORTH);
-                }
-                if ((key == KeyEvent.VK_S) && !(d2 == DIRECTION.NORTH)) {
-                    backend.getPlayers()[1].setDirection(DIRECTION.SOUTH);
-                }
-
-                if (key == KeyEvent.VK_ESCAPE) {
-                    timer.stop();
-                    ingameMenu.setVisible(true);
-                }
+        	Player[] players = backend.getPlayers();
+        	int key = e.getKeyCode();
+        	
+        	if (key == KeyEvent.VK_ESCAPE) {
+                timer.stop();
+                ingameMenu.setVisible(true);
             }
+        	
+        	else if (key == KeyEvent.VK_LEFT) {
+        		for (int i = 0; i < players.length; i++) {
+        			if (players[i].getType() == PlayerType.PLAYER1 && players[i].getDirection() != DIRECTION.EAST)
+        				players[i].setDirection(DIRECTION.WEST);
+        		}
+        	}
+        	else if (key == KeyEvent.VK_RIGHT) {
+        		for (int i = 0; i < players.length; i++) {
+        			if (players[i].getType() == PlayerType.PLAYER1 && players[i].getDirection() != DIRECTION.WEST)
+        				players[i].setDirection(DIRECTION.EAST);
+        		}
+        	}
+        	else if (key == KeyEvent.VK_UP) {
+        		for (int i = 0; i < players.length; i++) {
+        			if (players[i].getType() == PlayerType.PLAYER1 && players[i].getDirection() != DIRECTION.SOUTH)
+        				players[i].setDirection(DIRECTION.NORTH);
+        		}
+        	}
+        	else if (key == KeyEvent.VK_DOWN) {
+        		for (int i = 0; i < players.length; i++) {
+        			if (players[i].getType() == PlayerType.PLAYER1 && players[i].getDirection() != DIRECTION.NORTH)
+        				players[i].setDirection(DIRECTION.SOUTH);
+        		}
+        	}
+        	
+        	else if (key == KeyEvent.VK_A) {
+        		for (int i = 0; i < players.length; i++) {
+        			if (players[i].getType() == PlayerType.PLAYER2 && players[i].getDirection() != DIRECTION.EAST)
+        				players[i].setDirection(DIRECTION.WEST);
+        		}
+        	}
+        	else if (key == KeyEvent.VK_D) {
+        		for (int i = 0; i < players.length; i++) {
+        			if (players[i].getType() == PlayerType.PLAYER2 && players[i].getDirection() != DIRECTION.WEST)
+        				players[i].setDirection(DIRECTION.EAST);
+        		}
+        	}
+        	else if (key == KeyEvent.VK_W) {
+        		for (int i = 0; i < players.length; i++) {
+        			if (players[i].getType() == PlayerType.PLAYER2 && players[i].getDirection() != DIRECTION.SOUTH)
+        				players[i].setDirection(DIRECTION.NORTH);
+        		}
+        	}
+        	else if (key == KeyEvent.VK_S) {
+        		for (int i = 0; i < players.length; i++) {
+        			if (players[i].getType() == PlayerType.PLAYER2 && players[i].getDirection() != DIRECTION.NORTH)
+        				players[i].setDirection(DIRECTION.SOUTH);
+        		}
+        	}
         }
     }
 
@@ -272,4 +235,3 @@ public class GameBoard extends JPanel implements ActionListener {
         backend.setContext(gameContext);
     }
 }
-

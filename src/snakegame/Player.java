@@ -39,78 +39,51 @@ public class Player {
 	public PlayerType getType() { return ptype; }
 	
 	public void decide(GameContext ctx) {
-		Pair[] snake = getSnake();
-		Pair apple = ctx.apples[0];
-		int[][] path = new int[ctx.width][ctx.height];
-		boolean[][] visited = new boolean[ctx.width][ctx.height];
-
-		for (int i = 0; i < ctx.width; i++) {
-			for (int j = 0; j < ctx.height; j++) {
-				path[i][j] = Integer.MAX_VALUE;
-				visited[i][j] = false;
+		int dist[][] = new int[ctx.width][ctx.height];
+		boolean check[][] = new boolean[ctx.width][ctx.height];
+		
+		for (int w = 0; w < ctx.width; w++) {
+			for (int h = 0; h < ctx.height; h++) {
+				dist[w][h] = -1;
+				check[w][h] = true;
 			}
 		}
-
-		for (Pair pair : snake) {
-			path[pair.x][pair.y] = -1;
-			visited[pair.x][pair.y] = true;
+		
+		for (int i = 0; i < ctx.players.length; i++) {
+			if (ctx.players[i].isGameOver()) continue;
+			Pair[] snake = ctx.players[i].getSnake();
+			for (int j = 0; j < snake.length; j++) check[snake[j].x][snake[j].y] = false;
 		}
-
-		int x;
-		int y;
-		int distance = 0;
-		Queue<int[]> queue = new LinkedList<int[]>();
-		queue.offer(new int[] { snake[0].x, snake[0].y, distance });
-		path[snake[0].x][snake[0].y] = distance;
-		visited[snake[0].x][snake[0].y] = true;
-
-		while (!queue.isEmpty()) {
-			int[] temp = queue.poll();
-			x = temp[0];
-			y = temp[1];
-			distance = temp[2];
-
-			if (x == apple.x && y == apple.y) {
-				for (int value = distance; value >= 0; value--) {
-					if (x + 1 < ctx.width && path[x + 1][y] == distance - 1) {
-						direction = DIRECTION.WEST;
-						continue;
-					}
-					if (x - 1 >= 0 && path[x - 1][y] == distance - 1) {
-						direction = DIRECTION.EAST;
-						continue;
-					}
-					if (y + 1 < ctx.height && path[x][y + 1] == distance - 1) {
-						direction = DIRECTION.NORTH;
-						continue;
-					}
-					if (y - 1 >= 0 && path[x][y - 1] == distance - 1) {
-						direction = DIRECTION.SOUTH;
-						continue;
-					}
-				}
-				break;
+		
+		Deque q = new Deque(ctx.width * ctx.height + 1);
+		for (int i = 0; i < ctx.apples.length; i++) {
+			Pair apple = ctx.apples[i];
+			dist[apple.x][apple.y] = 0;
+			q.push_back(apple);
+		}
+		
+		int dx[] = { 0, 1, 0, -1 };
+		int dy[] = { 1, 0, -1, 0 };
+		DIRECTION d[] = { DIRECTION.SOUTH, DIRECTION.EAST, DIRECTION.NORTH, DIRECTION.WEST };
+		
+		while (q.size() > 0) {
+			Pair here = q.pop_front();
+			for (int i = 0; i < 4; i++) {
+				if (here.x + dx[i] < 0 || ctx.width <= here.x + dx[i] || here.y + dy[i] < 0 || ctx.width <= here.y + dy[i]) continue;
+				if (dist[here.x + dx[i]][here.y + dy[i]] != -1 || !check[here.x + dx[i]][here.y + dy[i]]) continue;
+				dist[here.x + dx[i]][here.y + dy[i]] = dist[here.x][here.y] + 1;
+				q.push_back(new Pair(here.x + dx[i], here.y + dy[i]));
 			}
-
-			if (x + 1 < ctx.width && !visited[x + 1][y] && path[x + 1][y] > distance) {
-				queue.offer(new int[] { x + 1, y, distance + 1 });
-				path[x + 1][y] = distance + 1;
-				visited[x + 1][y] = true;
-			}
-			if (x - 1 >= 0 && !visited[x - 1][y] && path[x - 1][y] > distance) {
-				queue.offer(new int[] { x - 1, y, distance + 1 });
-				path[x - 1][y] = distance + 1;
-				visited[x - 1][y] = true;
-			}
-			if (y + 1 < ctx.height && !visited[x][y + 1] && path[x][y + 1] > distance) {
-				queue.offer(new int[] { x, y + 1, distance + 1 });
-				path[x][y + 1] = distance + 1;
-				visited[x][y + 1] = true;
-			}
-			if (y - 1 >= 0 && !visited[x][y - 1] && path[x][y - 1] > distance) {
-				queue.offer(new int[] { x, y - 1, distance + 1 });
-				path[x][y - 1] = distance + 1;
-				visited[x][y - 1] = true;
+		}
+		
+		int op = ctx.height * ctx.height;
+		Pair head = snake.front();
+		for (int i = 0; i < 4; i++) {
+			if (getDirection() == d[(i+2) % 4]) continue;
+			if (head.x + dx[i] < 0 || ctx.width <= head.x + dx[i] || head.y + dy[i] < 0 || ctx.width <= head.y + dy[i]) continue;
+			if (dist[head.x + dx[i]][head.y + dy[i]] != -1 && dist[head.x + dx[i]][head.y + dy[i]] < op) {
+				op = dist[head.x + dx[i]][head.y + dy[i]];
+				setDirection(d[i]);
 			}
 		}
 	}

@@ -49,11 +49,15 @@ public class Game {
 		}
 
 		boolean eaten[] = new boolean[apples.length];
+
+		for (int i = 0; i < players.length; i++) {
+			if (players[i].getType() == PlayerType.AUTO) players[i].decide(getContext());
+		}
+		
 		for (int i = 0; i < players.length; i++) {
 			if (players[i].isGameOver()) continue;
 			Pair mv = players[i].getSnake()[0];
 			
-			if (players[i].getType() == PlayerType.AUTO) players[i].decide(getContext());
 			if (players[i].getDirection() == DIRECTION.NORTH) mv.y--;
 			else if (players[i].getDirection() == DIRECTION.SOUTH) mv.y++;
 			else if (players[i].getDirection() == DIRECTION.EAST) mv.x++;

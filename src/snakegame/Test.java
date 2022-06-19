@@ -3,6 +3,20 @@ package snakegame;
 import java.util.Date;
 import java.util.Scanner;
 
+enum Key{
+	PLAYER1_UP('w'),
+	PLAYER1_DOWN('s'),
+	PLAYER1_LEFT('a'),
+	PLAYER1_RIGHT('d'),
+	PLAYER2_UP('o'),
+	PLAYER2_DOWN('l'),
+	PLAYER2_LEFT('k'),
+	PLAYER2_RIGHT(';');
+	
+	private final char value;
+	Key(char value){this.value = value;}
+}
+
 public class Test {
 	public static void main(String args[]) {
 		Scanner sc = new Scanner(System.in);
@@ -13,29 +27,29 @@ public class Test {
 			System.out.print("input: ");
 			char ch = sc.next().charAt(0);
 			
-			if (ch == 'w') {
+			if (ch == Key.PLAYER1_UP.ordianl()) {
 				for (int i = 0; i < ctx.players.length; i++) if (ctx.players[i].getType() == PlayerType.PLAYER1) ctx.players[i].setDirection(DIRECTION.NORTH);
 			}
-			else if (ch == 's') {
+			else if (ch == Key.PLAYER1_DOWN.ordianl()) {
 				for (int i = 0; i < ctx.players.length; i++) if (ctx.players[i].getType() == PlayerType.PLAYER1) ctx.players[i].setDirection(DIRECTION.SOUTH);
 			}
-			else if (ch == 'd') {
+			else if (ch == Key.PLAYER1_RIGHT.ordianl()) {
 				for (int i = 0; i < ctx.players.length; i++) if (ctx.players[i].getType() == PlayerType.PLAYER1) ctx.players[i].setDirection(DIRECTION.EAST);
 			}
-			else if (ch == 'a') {
+			else if (ch == Key.PLAYER1_LEFT.ordianl()) {
 				for (int i = 0; i < ctx.players.length; i++) if (ctx.players[i].getType() == PlayerType.PLAYER1) ctx.players[i].setDirection(DIRECTION.WEST);
 			}
 			
-			else if (ch == 'o') {
+			else if (ch == Key.PLAYER2_UP.ordianl()) {//UP
 				for (int i = 0; i < ctx.players.length; i++) if (ctx.players[i].getType() == PlayerType.PLAYER2) ctx.players[i].setDirection(DIRECTION.NORTH);
 			}
-			else if (ch == 'l') {
+			else if (ch == Key.PLAYER2_DOWN.ordianl()) {//DOWN
 				for (int i = 0; i < ctx.players.length; i++) if (ctx.players[i].getType() == PlayerType.PLAYER2) ctx.players[i].setDirection(DIRECTION.SOUTH);
 			}
-			else if (ch == ';') {
+			else if (ch == Key.PLAYER2_RIGHT.ordianl()) {//RIGHT
 				for (int i = 0; i < ctx.players.length; i++) if (ctx.players[i].getType() == PlayerType.PLAYER2) ctx.players[i].setDirection(DIRECTION.EAST);
 			}
-			else if (ch == 'k') {
+			else if (ch == Key.PLAYER2_LEFT.ordianl()) {//LEFT
 				for (int i = 0; i < ctx.players.length; i++) if (ctx.players[i].getType() == PlayerType.PLAYER2) ctx.players[i].setDirection(DIRECTION.WEST);
 			}
 			
